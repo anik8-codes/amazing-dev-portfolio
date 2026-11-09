@@ -32,6 +32,8 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
 
   > local verification (10 Nov): `pnpm check`, lint, knip, build, 33 unit tests and 8 desktop/390 px browser + axe checks pass. The same LHCI 0.15 assertions pass on home and Botmartz: performance 98/99, LCP 1.69/1.83 s, script transfers 160,318/146,658 bytes against the unchanged 163,840-byte ceiling. Other experience pages share the corrected client bundle; the full GitHub run remains the final check.
 
+  > GitHub follow-up (10 Nov): run `42713469875` passed every non-performance check and the JS/LCP budgets, but failed TBT on the hosted runner. Its browser was an unversioned Chromium snapshot (159), while local audits used stable Chrome (156). The browser channel is now explicitly stable. The same five pages and three runs per page execute as an independent matrix with separate report artifacts, shortening feedback without changing any assertions.
+
 - [ ] **T04 Infra as code**
   - Read: requirements §3 (Infra), §13.
   - Build: OpenTofu in `infra/` for Cloudflare: Pages project, R2 bucket (media), D1 database, KV namespace, DNS records for the chosen domain; remote state; `tofu plan` on PR, `apply` on `main` from CI; `.gitignore` covers plans and state.
