@@ -1,0 +1,370 @@
+{
+  "html": {
+    "file": "html.svg",
+    "mono": false
+  },
+  "css": {
+    "file": "css.svg",
+    "mono": false
+  },
+  "javascript": {
+    "file": "javascript.svg",
+    "mono": false
+  },
+  "typescript": {
+    "file": "typescript.svg",
+    "mono": false
+  },
+  "python": {
+    "file": "python.svg",
+    "mono": false
+  },
+  "react": {
+    "file": "react.svg",
+    "mono": false
+  },
+  "next.js": {
+    "file": "next-js.svg",
+    "mono": true
+  },
+  "react native": {
+    "file": "react-native.svg",
+    "mono": false
+  },
+  "redux": {
+    "file": "redux.svg",
+    "mono": false
+  },
+  "tailwind": {
+    "file": "tailwind.svg",
+    "mono": false
+  },
+  "shadcn/ui": {
+    "file": "shadcn-ui.svg",
+    "mono": true
+  },
+  "motion": {
+    "file": "motion.svg",
+    "mono": false
+  },
+  "three.js": {
+    "file": "three-js.svg",
+    "mono": true
+  },
+  "vite": {
+    "file": "vite.svg",
+    "mono": false
+  },
+  "tanstack query": {
+    "file": "tanstack-query.svg",
+    "mono": false
+  },
+  "zod": {
+    "file": "zod.svg",
+    "mono": false
+  },
+  "vue": {
+    "file": "vue.svg",
+    "mono": false
+  },
+  "angular": {
+    "file": "angular.svg",
+    "mono": false
+  },
+  "svelte": {
+    "file": "svelte.svg",
+    "mono": false
+  },
+  "node.js": {
+    "file": "node-js.svg",
+    "mono": false
+  },
+  "express": {
+    "file": "express.svg",
+    "mono": true
+  },
+  "websockets": {
+    "file": "websockets.svg",
+    "mono": true
+  },
+  "flask": {
+    "file": "flask.svg",
+    "mono": false
+  },
+  "fastapi": {
+    "file": "fastapi.svg",
+    "mono": false
+  },
+  "django": {
+    "file": "django.svg",
+    "mono": true
+  },
+  "postgresql": {
+    "file": "postgresql.svg",
+    "mono": false
+  },
+  "mysql": {
+    "file": "mysql.svg",
+    "mono": false
+  },
+  "sqlite": {
+    "file": "sqlite.svg",
+    "mono": false
+  },
+  "mongodb": {
+    "file": "mongodb.svg",
+    "mono": false
+  },
+  "redis": {
+    "file": "redis.svg",
+    "mono": false
+  },
+  "dynamodb": {
+    "file": "dynamodb.svg",
+    "mono": false
+  },
+  "rds": {
+    "file": "rds.svg",
+    "mono": false
+  },
+  "prisma": {
+    "file": "prisma.svg",
+    "mono": true
+  },
+  "supabase": {
+    "file": "supabase.svg",
+    "mono": false
+  },
+  "razorpay": {
+    "file": "razorpay.svg",
+    "mono": false
+  },
+  "phonepe": {
+    "file": "phonepe.svg",
+    "mono": false
+  },
+  "stripe": {
+    "file": "stripe.svg",
+    "mono": false
+  },
+  "paddle": {
+    "file": "paddle.svg",
+    "mono": false
+  },
+  "oauth": {
+    "file": "oauth.svg",
+    "mono": false
+  },
+  "google sign-in": {
+    "file": "google-sign-in.svg",
+    "mono": false
+  },
+  "clerk": {
+    "file": "clerk.svg",
+    "mono": false
+  },
+  "cognito": {
+    "file": "cognito.svg",
+    "mono": false
+  },
+  "auth0": {
+    "file": "auth0.svg",
+    "mono": false
+  },
+  "firebase auth": {
+    "file": "firebase-auth.svg",
+    "mono": false
+  },
+  "supabase auth": {
+    "file": "supabase-auth.svg",
+    "mono": false
+  },
+  "jwt": {
+    "file": "jwt.svg",
+    "mono": false
+  },
+  "aws": {
+    "file": "aws.svg",
+    "mono": false
+  },
+  "ec2": {
+    "file": "ec2.svg",
+    "mono": false
+  },
+  "ecs": {
+    "file": "ecs.svg",
+    "mono": false
+  },
+  "ecr": {
+    "file": "ecr.svg",
+    "mono": false
+  },
+  "aws lambda": {
+    "file": "aws-lambda.svg",
+    "mono": false
+  },
+  "autoscaling": {
+    "file": "autoscaling.svg",
+    "mono": false
+  },
+  "s3": {
+    "file": "s3.svg",
+    "mono": false
+  },
+  "cloudfront": {
+    "file": "cloudfront.svg",
+    "mono": false
+  },
+  "vpc": {
+    "file": "vpc.svg",
+    "mono": false
+  },
+  "alb": {
+    "file": "alb.svg",
+    "mono": false
+  },
+  "api gateway": {
+    "file": "api-gateway.svg",
+    "mono": false
+  },
+  "route 53": {
+    "file": "route-53.svg",
+    "mono": false
+  },
+  "acm": {
+    "file": "acm.svg",
+    "mono": false
+  },
+  "sqs": {
+    "file": "sqs.svg",
+    "mono": false
+  },
+  "sns": {
+    "file": "sns.svg",
+    "mono": false
+  },
+  "ses": {
+    "file": "ses.svg",
+    "mono": false
+  },
+  "eventbridge": {
+    "file": "eventbridge.svg",
+    "mono": false
+  },
+  "iam": {
+    "file": "iam.svg",
+    "mono": false
+  },
+  "secrets manager": {
+    "file": "secrets-manager.svg",
+    "mono": false
+  },
+  "ssm": {
+    "file": "ssm.svg",
+    "mono": false
+  },
+  "kms": {
+    "file": "kms.svg",
+    "mono": false
+  },
+  "cloudwatch": {
+    "file": "cloudwatch.svg",
+    "mono": false
+  },
+  "linux": {
+    "file": "linux.svg",
+    "mono": false
+  },
+  "nginx": {
+    "file": "nginx.svg",
+    "mono": false
+  },
+  "git": {
+    "file": "git.svg",
+    "mono": false
+  },
+  "github actions": {
+    "file": "github-actions.svg",
+    "mono": false
+  },
+  "docker": {
+    "file": "docker.svg",
+    "mono": false
+  },
+  "kubernetes": {
+    "file": "kubernetes.svg",
+    "mono": false
+  },
+  "terraform": {
+    "file": "terraform.svg",
+    "mono": false
+  },
+  "pulumi": {
+    "file": "pulumi.svg",
+    "mono": false
+  },
+  "prometheus": {
+    "file": "prometheus.svg",
+    "mono": false
+  },
+  "grafana": {
+    "file": "grafana.svg",
+    "mono": false
+  },
+  "jest": {
+    "file": "jest.svg",
+    "mono": false
+  },
+  "vitest": {
+    "file": "vitest.svg",
+    "mono": false
+  },
+  "playwright": {
+    "file": "playwright.svg",
+    "mono": false
+  },
+  "google cloud": {
+    "file": "google-cloud.svg",
+    "mono": false
+  },
+  "vercel": {
+    "file": "vercel.svg",
+    "mono": true
+  },
+  "netlify": {
+    "file": "netlify.svg",
+    "mono": false
+  },
+  "cloudflare": {
+    "file": "cloudflare.svg",
+    "mono": false
+  },
+  "cloudflare workers": {
+    "file": "cloudflare-workers.svg",
+    "mono": false
+  },
+  "data science": {
+    "file": "data-science.svg",
+    "mono": false
+  },
+  "power bi": {
+    "file": "power-bi.svg",
+    "mono": false
+  },
+  "deep learning": {
+    "file": "deep-learning.svg",
+    "mono": false
+  },
+  "opencv": {
+    "file": "opencv.svg",
+    "mono": false
+  },
+  "langchain": {
+    "file": "langchain.svg",
+    "mono": false
+  },
+  "whisper": {
+    "file": "whisper.svg",
+    "mono": false
+  }
+}

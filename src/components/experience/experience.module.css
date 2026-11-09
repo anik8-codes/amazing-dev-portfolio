@@ -1,0 +1,334 @@
+/*
+ * Experience chapters.
+ *
+ * Every chapter is a block in normal flow, so the layout can never overlap: without pinning
+ * (mobile, short windows, reduced motion) they simply stack. On wide screens each block is
+ * tall and its content is sticky, so chapters pin and hand over in turn. Scroll-driven
+ * animations are optional polish on top, each tied to its own block's view timeline.
+ */
+
+.chapters {
+  display: flex;
+  flex-direction: column;
+}
+
+.dots,
+.road {
+  display: none;
+}
+
+.chapter {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 40px;
+  align-items: end;
+  padding-block: 48px 0;
+}
+@media (min-width: 900px) {
+  .chapter {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+  .flip .copy {
+    order: 2;
+  }
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 72px;
+}
+
+.visual {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-items: end;
+  min-height: 320px;
+}
+
+/* The place: a flat 3-tone illustration that fades into the hills at its foot. */
+/* Narrower than the big number, so the digits peek out on both sides. */
+.scene {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 360px);
+  margin-bottom: 40px;
+}
+.art {
+  position: relative;
+  /* Melt into the page on every side but the top: bottom into the hills, sides into the air. */
+  mask-image:
+    linear-gradient(to bottom, #000 78%, transparent),
+    linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-composite: intersect;
+}
+.tone {
+  position: absolute;
+  inset: 0;
+  mask-mode: luminance; /* masks are 1-bit black/white: white = paint */
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* A job without a place illustration yet: anik8 in that era's look, standing on the hills. */
+.portrait {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 56px;
+}
+
+/* Layered hills along the bottom of every chapter, full width, behind everything. */
+.hills {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  height: 200px;
+  translate: -50% 0;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+
+/* ---- 3D photo collage ------------------------------------------------------------------- */
+
+.collage {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1 / 0.9;
+  margin-inline: auto;
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.photo {
+  position: absolute;
+  width: 52%;
+  transform: rotateZ(var(--rz)) rotateY(var(--ry)) rotateX(var(--rx)) translateZ(var(--z));
+  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.photo:hover,
+.photo:focus-within {
+  z-index: 5;
+  transform: rotateZ(0deg) translateZ(140px) scale(1.04);
+}
+
+/* Two real portrait photos share the space without cropping away the desk or decorations. */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 20px;
+  aspect-ratio: auto;
+  padding: 24px 16px 56px;
+}
+.pair .photo {
+  position: relative;
+  width: 100%;
+  transform: rotateZ(var(--rz));
+}
+.pair .photo:hover {
+  transform: rotateZ(0deg) translateY(-4px);
+}
+
+/* ---- pinned chapters (wide, tall enough, motion OK) ------------------------------------- */
+
+@media (min-width: 1100px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
+  .block {
+    height: 160svh; /* scroll distance each chapter stays pinned */
+  }
+
+  .sticky {
+    position: sticky;
+    top: 72px;
+    height: calc(100svh - 88px);
+    display: flex;
+    flex-direction: column;
+    overflow-x: visible;
+    overflow-y: clip;
+  }
+
+  .chapter {
+    flex: 1;
+    min-height: 0;
+    padding: 0 40px 0 0;
+  }
+  .copy {
+    align-self: center;
+    padding-bottom: 0;
+  }
+
+  /* Right-edge dots: this chapter's dot is red and larger. */
+  .dots {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    translate: 0 -50%;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--color-haze);
+    transition: scale 200ms;
+  }
+  .dot:hover {
+    scale: 1.3;
+  }
+  .dot[aria-current] {
+    scale: 1.5;
+    background: var(--color-red);
+  }
+
+  /* Bottom road = progress bar with a flag per job, the runner and this chapter's counter. */
+  .road {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 40px 28px 24px;
+  }
+  .roadLine {
+    container-type: inline-size; /* lets the runner move in road widths (cqw) */
+    position: relative;
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-haze);
+  }
+  .roadFill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-red);
+    transform-origin: left;
+    scale: var(--from) 1; /* static fallback: filled up to this chapter's flag */
+  }
+  .flag {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    translate: -50% -50%;
+    border: 3px solid var(--color-ink);
+    border-radius: 999px;
+    background: var(--color-white);
+  }
+  .flag > span {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    translate: -50% 0;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .runnerTrack {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 0; /* takes no space: nothing pokes past the page edge */
+    translate: calc(var(--from) * 100cqw) 0; /* static fallback: standing at this flag */
+  }
+  .runner {
+    translate: -50% 0;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+  }
+  .counter {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+
+  /* Polish, only where scroll-driven animations exist. Each block drives its own chapter. */
+  @supports (animation-timeline: view()) {
+    .block {
+      view-timeline: --chapter block;
+    }
+    .copy {
+      animation: copy-in linear both;
+      animation-timeline: --chapter;
+      animation-range: entry 25% entry 90%;
+    }
+    .scene {
+      animation: rise linear both;
+      animation-timeline: --chapter;
+      animation-range: entry 10% contain 10%;
+    }
+    .roadFill {
+      animation: fill linear both;
+      animation-timeline: --chapter;
+      animation-range: contain 0% contain 100%;
+    }
+    .runnerTrack {
+      animation: along linear both;
+      animation-timeline: --chapter;
+      animation-range: contain 0% contain 100%;
+    }
+    .runner {
+      animation: legs steps(8) both;
+      animation-timeline: --chapter;
+      animation-range: contain 0% contain 100%;
+      animation-iteration-count: 10;
+    }
+  }
+}
+
+@keyframes copy-in {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0.4;
+    scale: 0.92;
+    translate: 0 32px;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+/* This chapter's stretch of road: from its flag to the next one. */
+@keyframes fill {
+  from {
+    scale: var(--from) 1;
+  }
+  to {
+    scale: var(--to) 1;
+  }
+}
+@keyframes along {
+  from {
+    translate: calc(var(--from) * 100cqw) 0;
+  }
+  to {
+    translate: calc(var(--to) * 100cqw) 0;
+  }
+}
+@keyframes legs {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: var(--strip);
+  }
+}

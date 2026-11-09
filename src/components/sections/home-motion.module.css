@@ -1,0 +1,195 @@
+/* A readable static layout is the baseline. Only supported, motion-safe browsers animate. */
+.world {
+  position: relative;
+  isolation: isolate;
+  view-timeline: --world block;
+}
+
+.sectionInner {
+  position: relative;
+  z-index: 1;
+}
+
+.scenery {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.sky,
+.skyline,
+.props {
+  position: absolute;
+  color: var(--color-haze);
+}
+
+/* Architectural shapes, kept faint and outside the reading surface. No extra image payload. */
+.sky {
+  top: 12%;
+  left: 8%;
+  width: 64px;
+  height: 8px;
+  background: currentColor;
+  box-shadow:
+    16px -8px 0 currentColor,
+    32px -16px 0 -2px currentColor,
+    720px 64px 0 currentColor,
+    736px 56px 0 currentColor;
+  opacity: 0.6;
+}
+
+.skyline {
+  bottom: 0;
+  right: 3%;
+  width: 32px;
+  height: 96px;
+  border: 4px solid currentColor;
+  box-shadow:
+    -48px 24px 0 -4px currentColor,
+    -88px 48px 0 -4px currentColor,
+    40px 32px 0 -4px currentColor;
+  opacity: 0.55;
+}
+
+.props {
+  bottom: 0;
+  left: 3%;
+  width: 48px;
+  height: 24px;
+  border: 4px solid currentColor;
+  box-shadow: 56px 8px 0 -4px currentColor;
+}
+
+.levelsHint {
+  display: none;
+}
+
+.quest {
+  --fan-x: 0px;
+  --fan-angle: 0deg;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sky,
+    .skyline,
+    .props {
+      animation: parallax linear both;
+      animation-timeline: --world;
+    }
+    .sky {
+      --drift: -24px;
+    }
+    .skyline {
+      --drift: -64px;
+    }
+    .props {
+      --drift: -112px;
+    }
+
+    .quest {
+      animation: fan-out linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    .quest:focus-within {
+      animation: none;
+      z-index: 2;
+    }
+    .slot {
+      animation: equip linear both;
+      animation-timeline: view();
+      animation-range: entry var(--slot-entry) entry 100%;
+    }
+  }
+
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .quest {
+      position: sticky;
+      top: 104px;
+      --fan-x: calc(var(--fan-column) * (100% + 24px));
+      --fan-angle: var(--fan-rotation);
+    }
+  }
+
+  /* Short viewports keep the normal grid so a pinned checkpoint can never be clipped. */
+  @media (min-width: 1024px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
+    .levels {
+      min-height: 240svh;
+      padding-block: 0;
+      --checkpoint-width: min(48vw, 560px);
+      --checkpoint-gap: 48px;
+    }
+    .levels > .sectionInner {
+      position: sticky;
+      top: 80px;
+      padding-block: 32px;
+    }
+    .levels .content {
+      margin-top: 24px;
+    }
+    .levelsHint {
+      display: block;
+    }
+    .levelsViewport {
+      overflow: clip;
+      padding: 8px 10px 10px;
+      margin-inline: -10px;
+    }
+    .levelsTrack {
+      display: flex;
+      gap: var(--checkpoint-gap);
+      width: max-content;
+      animation: checkpoints linear both;
+      animation-timeline: --world;
+      animation-range: contain 0% contain 100%;
+    }
+    .levelsTrack > li {
+      width: var(--checkpoint-width);
+    }
+    /* Tab moves directly to the relevant checkpoint without trapping focus offscreen. */
+    .levelsTrack:focus-within {
+      animation: none;
+    }
+    .levelsTrack:has(li:nth-child(2):focus-within) {
+      transform: translateX(calc(-1 * (var(--checkpoint-width) + var(--checkpoint-gap))));
+    }
+    .levelsTrack:has(li:nth-child(3):focus-within) {
+      transform: translateX(calc(-2 * (var(--checkpoint-width) + var(--checkpoint-gap))));
+    }
+  }
+}
+
+@keyframes parallax {
+  from {
+    transform: translateX(48px);
+  }
+  to {
+    transform: translateX(var(--drift));
+  }
+}
+@keyframes fan-out {
+  from {
+    transform: translate(var(--fan-x), 32px) rotate(var(--fan-angle));
+  }
+  to {
+    transform: translate(0, 0) rotate(0);
+  }
+}
+@keyframes equip {
+  from {
+    opacity: 0.3;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes checkpoints {
+  to {
+    transform: translateX(calc(-100% + min(1152px, 100vw - 64px)));
+  }
+}

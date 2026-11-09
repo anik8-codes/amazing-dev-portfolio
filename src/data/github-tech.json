@@ -1,0 +1,361 @@
+{
+  "user": "anik8-codes",
+  "generatedAt": "2026-11-09",
+  "repos": 60,
+  "stars": 22,
+  "tech": {
+    "react": {
+      "repos": 21,
+      "stars": 13,
+      "firstYear": 2025,
+      "repoNames": [
+        "linkedin-react-homepage",
+        "SettleX",
+        "agent-orchestrator",
+        "Cartella",
+        "TEDXIPSA-2026",
+        "vibe-code-editor",
+        "typescript-basics",
+        "Energy-DashBoard",
+        "B2B-Newsletter-SaaS",
+        "Netbox-Camera-Scanner-Dashboard",
+        "Amazing-Dev-Components",
+        "RailTrack",
+        "Maitry-AI",
+        "WasteManagement",
+        "SportsMitra-UI",
+        "Fyrebit-Hackwave",
+        "Frontend-battle-R2",
+        "Frontend-Battle-IITB",
+        "AetheriBot",
+        "EduOrb",
+        "To-Do-List"
+      ]
+    },
+    "typescript": {
+      "repos": 19,
+      "stars": 0,
+      "firstYear": 2025,
+      "repoNames": [
+        "linkedin-react-homepage",
+        "SettleX",
+        "NutriAI",
+        "agent-orchestrator",
+        "crud-postgres",
+        "vibe-code-editor",
+        "typescript-basics",
+        "Energy-DashBoard",
+        "B2B-Newsletter-SaaS",
+        "Netbox-Camera-Scanner-Dashboard",
+        "RailTrack",
+        "Maitry-AI",
+        "WasteManagement",
+        "SportsMitra-UI",
+        "Fyrebit-Hackwave",
+        "Frontend-battle-R2",
+        "Frontend-Battle-IITB",
+        "AetheriBot",
+        "EduOrb"
+      ]
+    },
+    "tailwind": {
+      "repos": 18,
+      "stars": 1,
+      "firstYear": 2025,
+      "repoNames": [
+        "SettleX",
+        "agent-orchestrator",
+        "Cartella",
+        "TEDXIPSA-2026",
+        "vibe-code-editor",
+        "Energy-DashBoard",
+        "B2B-Newsletter-SaaS",
+        "Netbox-Camera-Scanner-Dashboard",
+        "RailTrack",
+        "Maitry-AI",
+        "WasteManagement",
+        "SportsMitra-UI",
+        "Fyrebit-Hackwave",
+        "Frontend-battle-R2",
+        "Frontend-Battle-IITB",
+        "AetheriBot",
+        "EduOrb",
+        "To-Do-List"
+      ]
+    },
+    "next.js": {
+      "repos": 17,
+      "stars": 0,
+      "firstYear": 2025,
+      "repoNames": [
+        "SettleX",
+        "agent-orchestrator",
+        "Cartella",
+        "vibe-code-editor",
+        "Energy-DashBoard",
+        "B2B-Newsletter-SaaS",
+        "Netbox-Camera-Scanner-Dashboard",
+        "RailTrack",
+        "Maitry-AI",
+        "WasteManagement",
+        "SportsMitra-UI",
+        "Fyrebit-Hackwave",
+        "Frontend-battle-R2",
+        "Frontend-Battle-IITB",
+        "AetheriBot",
+        "EduOrb",
+        "To-Do-List"
+      ]
+    },
+    "javascript": {
+      "repos": 12,
+      "stars": 13,
+      "firstYear": 2025,
+      "repoNames": [
+        "Cartella",
+        "TEDXIPSA-2026",
+        "Cloudinary-to-s3-migration-script",
+        "Javascript-Practice-Questions",
+        "Project-Management-Tool-Backend",
+        "Amazing-Dev-Components",
+        "WasteManagement",
+        "Fyrebit-Hackwave",
+        "React-basics",
+        "To-Do-List",
+        "Astroshala",
+        "Javascript-basics"
+      ]
+    },
+    "motion": {
+      "repos": 8,
+      "stars": 1,
+      "firstYear": 2025,
+      "repoNames": [
+        "agent-orchestrator",
+        "TEDXIPSA-2026",
+        "WasteManagement",
+        "Fyrebit-Hackwave",
+        "Frontend-battle-R2",
+        "Frontend-Battle-IITB",
+        "AetheriBot",
+        "EduOrb"
+      ]
+    },
+    "data science": {
+      "repos": 8,
+      "stars": 4,
+      "firstYear": 2024,
+      "repoNames": [
+        "CICD-with-Azure",
+        "polyp_detection",
+        "Text-Classifier",
+        "Text-Classification-Using-BERT",
+        "Lead-Generation-ML-Model",
+        "ML-pipelines",
+        "HTM-5.0-Tier3Hackers",
+        "Amazing-Machine-Learing-Models"
+      ]
+    },
+    "github actions": {
+      "repos": 7,
+      "stars": 1,
+      "firstYear": 2024,
+      "repoNames": [
+        "anik8-codes",
+        "cloud-devops-zero-to-100",
+        "halloween-github-profile",
+        "kube-from-zero",
+        "NutriAI",
+        "Aniket-CV-25",
+        "aniketsingh1023"
+      ]
+    },
+    "python": {
+      "repos": 7,
+      "stars": 0,
+      "firstYear": 2024,
+      "repoNames": [
+        "cloud-devops-zero-to-100",
+        "django-tutorial-gsoc",
+        "Minor-Project-Deployed",
+        "multilingual-text-classification",
+        "new",
+        "loops",
+        "EasyPython"
+      ]
+    },
+    "llm apps": {
+      "repos": 5,
+      "stars": 2,
+      "firstYear": 2024,
+      "repoNames": ["Fyrebit-Hackwave", "AetheriBot", "EduOrb", "HTM-5.0-Tier3Hackers", "new"]
+    },
+    "html": {
+      "repos": 5,
+      "stars": 1,
+      "firstYear": 2024,
+      "repoNames": [
+        "styling-web-dev-components",
+        "aniket-portfolio-2024",
+        "Aniket-s-portfolio",
+        "WorldOfCode",
+        "Anik8-Webdev"
+      ]
+    },
+    "deep learning": {
+      "repos": 5,
+      "stars": 1,
+      "firstYear": 2025,
+      "repoNames": [
+        "polyp_detection",
+        "Text-Classifier",
+        "Minor-Project-Deployed",
+        "multilingual-text-classification",
+        "Text-Classification-Using-BERT"
+      ]
+    },
+    "mongodb": {
+      "repos": 4,
+      "stars": 1,
+      "firstYear": 2024,
+      "repoNames": [
+        "Project-Management-Tool-Backend",
+        "Fyrebit-Hackwave",
+        "EduOrb",
+        "AlgoBusters-Hackindore-"
+      ]
+    },
+    "docker": {
+      "repos": 3,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["cloud-devops-zero-to-100", "NutriAI", "agent-orchestrator"]
+    },
+    "prisma": {
+      "repos": 3,
+      "stars": 0,
+      "firstYear": 2025,
+      "repoNames": ["agent-orchestrator", "Cartella", "vibe-code-editor"]
+    },
+    "aws": {
+      "repos": 3,
+      "stars": 0,
+      "firstYear": 2025,
+      "repoNames": ["vibe-code-editor", "Fyrebit-Hackwave", "EduOrb"]
+    },
+    "kubernetes": {
+      "repos": 2,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["cloud-devops-zero-to-100", "kube-from-zero"]
+    },
+    "vite": {
+      "repos": 2,
+      "stars": 1,
+      "firstYear": 2026,
+      "repoNames": ["linkedin-react-homepage", "TEDXIPSA-2026"]
+    },
+    "postgresql": {
+      "repos": 2,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["agent-orchestrator", "crud-postgres"]
+    },
+    "three.js": {
+      "repos": 2,
+      "stars": 1,
+      "firstYear": 2025,
+      "repoNames": ["TEDXIPSA-2026", "Frontend-battle-R2"]
+    },
+    "express": {
+      "repos": 2,
+      "stars": 1,
+      "firstYear": 2024,
+      "repoNames": ["Project-Management-Tool-Backend", "AlgoBusters-Hackindore-"]
+    },
+    "node.js": {
+      "repos": 2,
+      "stars": 1,
+      "firstYear": 2024,
+      "repoNames": ["Project-Management-Tool-Backend", "AlgoBusters-Hackindore-"]
+    },
+    "css": {
+      "repos": 2,
+      "stars": 1,
+      "firstYear": 2024,
+      "repoNames": ["Color-Theme-Changer", "AlgoBusters-Hackindore-"]
+    },
+    "fastapi": {
+      "repos": 2,
+      "stars": 0,
+      "firstYear": 2025,
+      "repoNames": ["Text-Classifier", "Minor-Project-Deployed"]
+    },
+    "terraform": {
+      "repos": 1,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["cloud-devops-zero-to-100"]
+    },
+    "bash": {
+      "repos": 1,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["kube-from-zero"]
+    },
+    "stripe": {
+      "repos": 1,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["agent-orchestrator"]
+    },
+    "redux": {
+      "repos": 1,
+      "stars": 0,
+      "firstYear": 2026,
+      "repoNames": ["Cartella"]
+    },
+    "vercel": {
+      "repos": 1,
+      "stars": 1,
+      "firstYear": 2026,
+      "repoNames": ["TEDXIPSA-2026"]
+    },
+    "firebase": {
+      "repos": 1,
+      "stars": 1,
+      "firstYear": 2026,
+      "repoNames": ["TEDXIPSA-2026"]
+    },
+    "java": {
+      "repos": 1,
+      "stars": 0,
+      "firstYear": 2025,
+      "repoNames": ["DSA-DUMPS"]
+    },
+    "angular": {
+      "repos": 1,
+      "stars": 12,
+      "firstYear": 2025,
+      "repoNames": ["Amazing-Dev-Components"]
+    },
+    "svelte": {
+      "repos": 1,
+      "stars": 12,
+      "firstYear": 2025,
+      "repoNames": ["Amazing-Dev-Components"]
+    },
+    "vue": {
+      "repos": 1,
+      "stars": 12,
+      "firstYear": 2025,
+      "repoNames": ["Amazing-Dev-Components"]
+    },
+    "flask": {
+      "repos": 1,
+      "stars": 0,
+      "firstYear": 2024,
+      "repoNames": ["new"]
+    }
+  }
+}

@@ -1,0 +1,19 @@
+.desktop {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-white);
+  color: var(--color-ink);
+}
+
+/* This document is the monitor surface, so omit the surrounding site chrome in its iframe. */
+:global(body):has(.desktop) > :global(header),
+:global(body):has(.desktop) :global(footer),
+:global(body):has(.desktop) > :global(a[href='#main']) {
+  display: none;
+}
+:global(body):has(.desktop) :global(#main) {
+  height: 100dvh;
+}
