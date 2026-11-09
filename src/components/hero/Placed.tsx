@@ -2,20 +2,20 @@ import { CANVAS_WIDTH, type Pos } from '@/config/hero';
 
 interface Props {
   pos: Pos;
-  /** Hide below the xl breakpoint (decorative props that have no mobile slot). */
+  /** Hide below the lg breakpoint (decorative props that have no mobile slot). */
   desktopOnly?: boolean;
   className?: string;
   children: React.ReactNode;
 }
 
 /**
- * Pins its child onto the hero canvas at xl+ (absolute, x as % of the canvas, tilted).
- * Below xl it is a normal flow item, so the mobile layout needs no extra markup.
+ * Pins its child onto the hero canvas at lg+ (absolute, x as % of the canvas, tilted).
+ * Below lg it is a normal flow item, so the mobile layout needs no extra markup.
  */
 export function Placed({ pos, desktopOnly, className, children }: Props) {
   return (
     <div
-      className={`shrink-0 snap-start xl:absolute xl:top-(--y) xl:left-(--x) xl:rotate-(--r) ${desktopOnly ? 'hidden xl:block' : ''} ${className ?? ''}`}
+      className={`shrink-0 snap-start lg:absolute lg:top-(--y) lg:left-(--x) lg:rotate-(--r) ${pos.centered ? 'lg:-translate-x-1/2 lg:-translate-y-1/2' : ''} ${desktopOnly ? 'hidden lg:block' : ''} ${className ?? ''}`}
       style={
         {
           '--x': `${(pos.x / CANVAS_WIDTH) * 100}%`,

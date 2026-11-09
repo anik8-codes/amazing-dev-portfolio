@@ -1,0 +1,30 @@
+/* Everything here is off unless the head script set html[data-swarm] (src/lib/swarm.ts). */
+
+.pill {
+  display: none;
+}
+:global(html[data-swarm]) .pill {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 101;
+  display: block;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 8px 16px;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-white);
+  box-shadow: 3px 3px 0 var(--color-ink);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.llm {
+  display: none;
+}
+:global(html[data-swarm]:not([data-swarm='build'])) .llm {
+  display: inline;
+}

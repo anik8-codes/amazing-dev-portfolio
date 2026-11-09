@@ -14,6 +14,7 @@ export function HeroVideo({ video, preview = false }: { video: VideoAsset; previ
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
+    const hoverTarget = node.closest<HTMLElement>('[data-hero-video-window]') ?? node;
     const calm = matchMedia('(prefers-reduced-motion: reduce)');
     let visible = false;
     let hovered = false;
@@ -124,6 +125,7 @@ export function HeroVideo({ video, preview = false }: { video: VideoAsset; previ
     const observer = new IntersectionObserver(
       ([entry]) => {
         visible = !!entry?.isIntersecting && entry.intersectionRatio >= 0.15;
+        hoverTarget.dataset.videoVisible = String(visible);
         if (!visible && active === node) {
           hovered = false;
           focused = false;
@@ -137,8 +139,8 @@ export function HeroVideo({ video, preview = false }: { video: VideoAsset; previ
 
     mute(true);
     observer.observe(node);
-    node.addEventListener('pointerenter', enter);
-    node.addEventListener('pointerleave', leave);
+    hoverTarget.addEventListener('pointerenter', enter);
+    hoverTarget.addEventListener('pointerleave', leave);
     node.addEventListener('focus', focus);
     node.addEventListener('blur', blur);
     node.addEventListener('pointerdown', gesture);
@@ -152,8 +154,9 @@ export function HeroVideo({ video, preview = false }: { video: VideoAsset; previ
     calm.addEventListener('change', sync);
     return () => {
       observer.disconnect();
-      node.removeEventListener('pointerenter', enter);
-      node.removeEventListener('pointerleave', leave);
+      delete hoverTarget.dataset.videoVisible;
+      hoverTarget.removeEventListener('pointerenter', enter);
+      hoverTarget.removeEventListener('pointerleave', leave);
       node.removeEventListener('focus', focus);
       node.removeEventListener('blur', blur);
       node.removeEventListener('pointerdown', gesture);

@@ -1,63 +1,57 @@
 import { Terminal } from '@/components/terminal/Terminal';
-import { CANVAS_HEIGHT, cartridges, reels, socialSpots, terminal } from '@/config/hero';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, intro, reels, socialSpots, terminal } from '@/config/hero';
 import { socials } from '@/config/socials';
-import { Cartridge } from './Cartridge';
 import { HeroFigurines } from './HeroFigurines';
 import { HeroCenter } from './HeroCenter';
+import { HeroVideo } from './HeroVideo';
 import { Placed } from './Placed';
 import { ReelWindow } from './ReelWindow';
 import { SocialTile } from './SocialTile';
+import { VideoWindow } from './VideoWindow';
+import styles from './hero.module.css';
 
-/** Mobile: a swipe row. Desktop (xl): `contents`, so children are placed straight onto the canvas. */
-const strip = 'flex snap-x scroll-px-4 gap-6 overflow-x-auto px-4 pb-4 xl:contents';
-
-/**
- * The "anik8 canvas" hero (requirements §4a). A grid canvas at xl+, a stacked layout below.
- * All content and positions come from src/config. Interactive behavior stays in small client leaves.
- */
+/** A bounded, balanced canvas on desktop; compact stacked content below 1024px. */
 export function HeroCanvas() {
   return (
     <section
       aria-label="anik8 canvas"
-      className="relative flex flex-col gap-10 py-10 xl:block xl:h-(--h) xl:py-0"
-      style={{ '--h': `${CANVAS_HEIGHT}px` } as React.CSSProperties}
+      className={styles.canvas}
+      style={
+        {
+          '--canvas-w': `${CANVAS_WIDTH}px`,
+          '--canvas-h': `${CANVAS_HEIGHT}px`,
+          '--intro-w': `${intro.w}px`,
+          '--intro-top': `${intro.top}px`,
+        } as React.CSSProperties
+      }
     >
-      <div className="px-4 xl:px-0">
-        <HeroCenter />
+      <div className={`${styles.introPlacement} ${styles.videoPlacement}`}>
+        <VideoWindow title={intro.title}>
+          <HeroVideo video={intro.video} preview />
+        </VideoWindow>
       </div>
-
-      <ul aria-label="find me on" className="flex flex-wrap justify-center gap-4 px-4 xl:contents">
+      <HeroCenter />
+      <ul aria-label="find me on" className={styles.socials}>
         {socials.map((s) => (
           <li key={s.id} className="contents">
-            <Placed pos={socialSpots[s.id] ?? { x: 0, y: 0 }}>
+            <Placed pos={socialSpots[s.id] ?? { x: 0, y: 0 }} className={styles.socialPlacement}>
               <SocialTile social={s} />
             </Placed>
           </li>
         ))}
       </ul>
-
-      {/* Focusable so keyboard users can scroll the strip on mobile. */}
-      <div id="reels" role="region" aria-label="reels" tabIndex={0} className={strip}>
+      <div id="reels" role="region" aria-label="reels" className={styles.media}>
         {reels.map((reel) => (
-          <Placed key={reel.title} pos={reel.pos}>
+          <Placed key={reel.title} pos={reel.pos} className={styles.videoPlacement}>
             <ReelWindow reel={reel} />
           </Placed>
         ))}
-        <Placed pos={terminal.pos}>
-          <Terminal file={terminal.file} />
+        <Placed pos={terminal.pos} className={styles.terminalPlacement}>
+          <Terminal file={terminal.file} compact />
         </Placed>
       </div>
-
-      <HeroFigurines className={strip} />
-
-      <nav aria-label="sections" className={`${strip} justify-center`}>
-        {cartridges.map((c) => (
-          <Placed key={c.label} pos={c.pos}>
-            <Cartridge label={c.label} href={c.href} />
-          </Placed>
-        ))}
-      </nav>
-
+      <HeroFigurines className={styles.figurines} />
+      <div aria-hidden className={styles.focusBackdrop} />
       <span id="read" className="sr-only">
         read mode starts here
       </span>

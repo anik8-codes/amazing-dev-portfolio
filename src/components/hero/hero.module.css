@@ -1,0 +1,201 @@
+.canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: var(--canvas-w);
+  margin-inline: auto;
+  padding: 24px 16px 32px;
+}
+.introPlacement {
+  position: relative;
+  width: 100%;
+  max-width: var(--intro-w);
+  margin-inline: auto;
+}
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+  margin-inline: auto;
+  text-align: center;
+}
+.wordmark {
+  width: min(100%, 316px);
+  height: auto;
+}
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 8px;
+}
+.socialPlacement {
+  width: 72px;
+}
+.media {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: center;
+}
+.reel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.terminalPlacement {
+  min-width: 0;
+}
+.figurines {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.videoPlacement {
+  z-index: 1;
+}
+.videoWindow {
+  width: 100%;
+  overflow: hidden;
+  border: 2px solid var(--color-ink);
+  border-radius: 12px;
+  background: var(--color-white);
+  box-shadow: 6px 6px 0 var(--color-haze);
+  transition: transform 160ms ease;
+}
+.videoWindow:focus-within {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 4px;
+}
+.titlebar {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding-inline: 8px;
+  border-bottom: 1px solid var(--color-haze);
+  background: var(--color-panel);
+}
+.traffic {
+  display: flex;
+  gap: 4px;
+}
+.traffic > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+}
+.close {
+  background: var(--color-window-close);
+}
+.minimize {
+  background: var(--color-window-minimize);
+}
+.maximize {
+  background: var(--color-window-maximize);
+}
+.filename {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-ink);
+}
+.focusBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  background: color-mix(in srgb, var(--color-white) 12%, transparent);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transition:
+    opacity 140ms ease,
+    visibility 140ms ease;
+}
+/* Raise the positioned ancestor as well, so the active card escapes its rotation context. */
+.videoPlacement:has(.videoWindow[data-video-visible='true'] :focus-visible) {
+  z-index: 80;
+  rotate: 0deg;
+}
+:global(body):has(.videoWindow[data-video-visible='true'] :focus-visible) .focusBackdrop {
+  visibility: visible;
+  opacity: 1;
+}
+:global(body):has(.videoWindow[data-video-visible='true'] :focus-visible) > :global([data-state]) {
+  visibility: hidden;
+}
+@media (hover: hover) {
+  .videoPlacement:has(.videoWindow:hover) {
+    z-index: 80;
+    rotate: 0deg;
+  }
+  .videoWindow:hover {
+    transform: translateY(-2px) scale(1.025);
+  }
+  :global(body):has(.videoWindow:hover) .focusBackdrop {
+    visibility: visible;
+    opacity: 1;
+  }
+  :global(body):has(.videoWindow:hover) > :global([data-state]) {
+    visibility: hidden;
+  }
+}
+@media (min-width: 1024px) {
+  .canvas {
+    display: block;
+    height: var(--canvas-h);
+    padding: 0;
+  }
+  .introPlacement {
+    position: absolute;
+    top: var(--intro-top);
+    left: 50%;
+    width: var(--intro-w);
+    transform: translateX(-50%);
+  }
+  .center {
+    position: absolute;
+    top: var(--center-top);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .wordmark {
+    width: 432px;
+  }
+  .socials,
+  .media {
+    display: contents;
+  }
+  .reel {
+    width: clamp(128px, 10vw, var(--reel-w));
+  }
+  .figurines {
+    position: absolute;
+    top: 540px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .videoWindow,
+  .focusBackdrop {
+    transition: none;
+  }
+  .videoWindow:hover {
+    transform: none;
+  }
+}

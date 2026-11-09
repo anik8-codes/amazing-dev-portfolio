@@ -21,7 +21,7 @@ export function Figurine({ look, selected, onSelect }: Props) {
       className="block cursor-pointer transition-transform hover:-translate-y-0.5"
     >
       <SelectionCorners selected={selected} className="flex flex-col items-center gap-1">
-        <Sprite src={looks[look].body} alt="" scale={0.5} eager />
+        <Sprite src={looks[look].body} alt="" scale={0.25} eager />
         <span className="font-display text-pixel-8 uppercase">{name}</span>
       </SelectionCorners>
     </button>

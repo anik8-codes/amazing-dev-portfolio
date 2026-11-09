@@ -18,7 +18,7 @@ const welcome = t.welcome.map((text) => ({ text }));
  * The hero's whoami.sh window. Click it to open a centred, typeable terminal (native <dialog>:
  * focus trap and Esc-to-close come free). Commands are interpreted by src/lib/terminal.ts.
  */
-export function Terminal({ file }: { file: string }) {
+export function Terminal({ file, compact = false }: { file: string; compact?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const screen = useRef<HTMLDivElement>(null);
@@ -74,7 +74,9 @@ export function Terminal({ file }: { file: string }) {
   }
 
   return (
-    <figure className="flex w-72 flex-col items-center gap-2">
+    <figure
+      className={`flex flex-col items-center gap-2 ${compact ? 'w-full lg:w-[clamp(170px,16vw,240px)]' : 'w-72'}`}
+    >
       <button
         type="button"
         onClick={open}
@@ -84,7 +86,9 @@ export function Terminal({ file }: { file: string }) {
         <span className="flex h-[26px] items-center justify-between border-b-3 border-ink px-2 font-display text-pixel-8 uppercase">
           zsh <span className="text-muted normal-case">click to type</span>
         </span>
-        <span className="block p-4 font-mono leading-8 whitespace-pre">
+        <span
+          className={`block font-mono ${compact ? 'p-3 text-xs leading-6 whitespace-pre-wrap' : 'p-4 leading-8 whitespace-pre'}`}
+        >
           <span className="text-red">→ </span>~ whoami{'\n'}
           <span className="text-muted">{t.whoami[1]}</span>
           {'\n'}
