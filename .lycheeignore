@@ -1,0 +1,9 @@
+# Routes the hero already links to but whose pages land in later roadmap tasks.
+# Delete each line when its page ships, so the link check guards it from then on.
+/quests/?$
+/blog/?$
+/lore/?$
+/learn/?$
+/book/?$
+/now/?$
+/infra/?$

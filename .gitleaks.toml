@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Example env file holds names only; build output and deps are never committed"
+paths = ['''\.env\.example$''', '''(^|/)\.next/''', '''(^|/)out/''', '''(^|/)node_modules/''']

@@ -1,0 +1,23 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env
+.DS_Store
+.lighthouseci/
+test-results/
+playwright-report/
+
+# OpenTofu: never commit state or plans (lock file IS committed)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+*.tfvars
+
+# source footage: kept locally / on R2, never in git (the site serves public/media)
+media/**/*.mp4
+media/**/*.mov

@@ -1,0 +1,66 @@
+{
+  "name": "amazing-dev-portfolio",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.5.2",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "serve out -l 4173",
+    "check": "next typegen && tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "prepare": "husky",
+    "test:e2e": "playwright test",
+    "sprites": "node scripts/cut-sprites.mjs",
+    "knip": "knip",
+    "scenes": "node scripts/make-scenes.mjs",
+    "tech-stats": "node scripts/tech-stats.mjs",
+    "tech-icons": "node scripts/make-tech-icons.mjs",
+    "github-profile": "node scripts/github-profile.mjs"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.8.2",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwindcss": "^4.3.5",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@iconify-json/logos": "^1.2.19",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.187.0",
+    "eslint": "^10.14.0",
+    "eslint-config-next": "^16.4.5",
+    "husky": "^9.1.7",
+    "knip": "^6.44.2",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "serve": "^14.2.7",
+    "sharp": "^0.35.5",
+    "simple-icons": "^16.37.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md,json,yml,yaml}": "prettier --write"
+  }
+}

@@ -1,0 +1,6 @@
+pnpm exec lint-staged
+if command -v gitleaks >/dev/null; then
+  gitleaks git --staged --redact --no-banner
+else
+  echo "gitleaks not installed (brew install gitleaks); CI will still scan."
+fi

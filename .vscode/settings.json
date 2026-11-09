@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+  "files.associations": { "*.css": "tailwindcss" },
+  "tailwindCSS.experimental.configFile": "src/app/globals.css",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "search.exclude": { "brand/**": true, "out/**": true, ".next/**": true }
+}
