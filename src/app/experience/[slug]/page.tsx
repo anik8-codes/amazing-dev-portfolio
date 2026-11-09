@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
+import { site } from '@/config/site';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { looks } from '@/assets/sprites';
 import { CompanyLinks } from '@/components/experience/CompanyLinks';
 import { PhotoCollage } from '@/components/experience/PhotoCollage';
 import { RoleLadder } from '@/components/experience/RoleLadder';
-import { OfficePortal } from '@/components/experience/OfficePortal';
 import { TechChips } from '@/components/experience/TechChips';
 import { Sprite } from '@/components/pixel/Sprite';
 import { jobs } from '@/config/experience';
@@ -22,7 +23,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const job = jobs.find((j) => j.slug === slug);
   return job
-    ? { title: `${job.roles[0]!.title} · ${job.company} · anik8`, description: job.summary }
+    ? pageMeta({
+        title: `${job.roles[0]!.title} at ${job.company} · Aniket Singh (anik8)`,
+        description: `${site.author} at ${job.company}: ${job.summary}`,
+        path: `/experience/${job.slug}/`,
+      })
     : {};
 }
 
@@ -54,8 +59,6 @@ export default async function ExperiencePage({ params }: Params) {
       </header>
 
       <RoleLadder roles={job.roles} />
-
-      {job.environment && <OfficePortal job={job} />}
 
       <section aria-labelledby="did" className="flex flex-col gap-5">
         <h2 id="did" className="font-display text-pixel-16 uppercase">

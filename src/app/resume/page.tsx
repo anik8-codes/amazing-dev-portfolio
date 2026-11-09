@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { ResumeViewer } from '@/components/resume/ResumeViewer';
 import { resume } from '@/config/resume';
 
-export const metadata: Metadata = { title: 'resume · anik8', description: resume.description };
+export const metadata: Metadata = pageMeta({
+  title: 'resume · Aniket Singh (anik8)',
+  description: resume.description,
+  path: resume.href,
+});
 
 export default function ResumePage() {
   return (
