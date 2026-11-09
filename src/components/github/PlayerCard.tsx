@@ -1,4 +1,4 @@
-import Image from 'next/image';
+/* eslint-disable @next/next/no-img-element -- pre-sized static portraits, no optimizer server */
 import avatar from '@/assets/profile/avatar.png';
 import portrait from '@/assets/profile/portrait.jpg';
 import { site } from '@/config/site';
@@ -30,8 +30,12 @@ export function PlayerCard({ login, stats }: Props) {
             <span className="text-muted">github</span>
           </span>
           <span className="mt-3 block overflow-hidden rounded-2xl bg-panel">
-            <Image
-              src={avatar}
+            <img
+              src={avatar.src}
+              width={avatar.width}
+              height={avatar.height}
+              loading="lazy"
+              decoding="async"
               alt=""
               className="aspect-square w-full [image-rendering:pixelated]"
             />
@@ -48,7 +52,15 @@ export function PlayerCard({ login, stats }: Props) {
           </span>
         </span>
         <span aria-hidden className={`${styles.face} ${styles.back}`}>
-          <Image src={portrait} alt="" className="size-full object-cover" />
+          <img
+            src={portrait.src}
+            width={portrait.width}
+            height={portrait.height}
+            loading="lazy"
+            decoding="async"
+            alt=""
+            className="size-full object-cover"
+          />
           <span className="absolute inset-x-4 bottom-4 rounded-xl bg-term/80 px-3 py-2 font-display text-pixel-8 text-term-fg uppercase">
             alt skin unlocked
           </span>

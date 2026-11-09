@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Footer } from '@/components/layout/Footer';
 import { Hud } from '@/components/layout/Hud';
-import { RunnerCursor } from '@/components/layout/RunnerCursor';
-import { SwarmLoader } from '@/components/layout/SwarmLoader';
+import { RunnerCursorLoader } from '@/components/layout/RunnerCursorLoader';
 import { SoundLayer } from '@/components/layout/SoundLayer';
 import { jsonLd } from '@/lib/seo';
 import { swarmScript } from '@/lib/swarm';
@@ -50,9 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main">{children}</main>
           <Footer />
         </div>
-        <RunnerCursor />
+        <RunnerCursorLoader />
         <SoundLayer />
-        <SwarmLoader />
       </body>
     </html>
   );

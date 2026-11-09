@@ -22,6 +22,7 @@ export function ControllerButton({ letter, href, sfx, children, className, compa
   return (
     <Link
       href={href}
+      prefetch={false}
       data-sfx={sfx}
       className={`inline-flex items-center border-3 border-ink ${compact ? 'gap-3 px-4 py-2 text-lg' : 'gap-4 px-6 py-3 text-2xl'} font-bold shadow-[6px_6px_0_var(--color-ink)] transition-[translate,box-shadow] duration-75 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none motion-reduce:transition-none ${look.button} ${className ?? ''}`}
     >

@@ -1,10 +1,5 @@
 @import 'tailwindcss';
 
-/* The loader's global root selector belongs here, outside CSS-module purity rules. */
-html[data-swarm] #main {
-  visibility: hidden;
-}
-
 /* Brand tokens (docs/brand.md). The default palette is cleared so only these exist. */
 @theme {
   --color-*: initial;

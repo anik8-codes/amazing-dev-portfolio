@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useSyncExternalStore } from 'react';
-import { sprites } from '@/assets/sprites';
+import { run } from '@/assets/sprites/run';
 import { companionOn, subscribeCompanion } from '@/lib/companion';
 
-const { run } = sprites;
 const SCALE = 0.25;
 const WIDTH = run.frameWidth * SCALE;
 const HEIGHT = run.src.height * SCALE;

@@ -17,7 +17,7 @@ A snapshot of what's built, how the pieces fit, and what's still open. Scope liv
 
 ## Home, top to bottom
 
-0. **Swarm intro** (`src/components/layout/SwarmLoader.tsx`, engine `src/lib/swarm-build.ts`): once per session on `/`, the hero starts blank and named cursor agents drag out boxes and rebuild it block by block (our own take on Joel Califa's Swarm). Visitors sent by an AI assistant (ChatGPT, Perplexity, …) get a hello. Click/Esc skips; off under reduced motion and without JS.
+0. **Swarm intro** (`src/components/layout/SwarmLoader.tsx`, engine `src/lib/swarm-build.ts`): once per session on `/`, named cursor agents trace boxes around the already-visible hero (our own take on Joel Califa's Swarm). The intro never hides content or delays reading, and ends within 4.5 seconds. Visitors sent by an AI assistant (ChatGPT, Perplexity, …) get a hello. Click/Esc skips; off under reduced motion and without JS.
 1. **Hero** (`src/components/hero/`, content in `src/config/hero.ts`, `hud.ts`, `socials.ts`): HUD, pixel wordmark, name and headline, A/B buttons, intro + reels, figurines, cartridges, social app icons, typeable `whoami.sh` terminal (`src/lib/terminal.ts`).
 2. **Experience** (`src/components/experience/`, `src/config/experience.ts`): one pinned chapter per company, newest first: company heading + website/LinkedIn, the title ladder (promotions), what I did, tech chips with real logos, and the place it happened as a duotone illustration on layered hills. The runner moves along the road at the bottom as you scroll.
 3. **Projects** (`src/components/sections/QuestLog.tsx`, `src/config/quests.ts`): compact cards (screenshot, name, one line, year · stack) linking to `/projects/<slug>/`.
@@ -52,7 +52,8 @@ Our own engine in `src/lib/world/` (plain three.js on WebGPU with a WebGL 2 fall
 
 ## Site-wide
 
-- **Swarm intro** on the first page of a visit, **music** (an original Web Audio chiptune, off by default), **SEO/GEO**: per-page canonical + Open Graph, a generated share card, Person/WebSite JSON-LD, `robots.txt`, `llms.txt`.
+- **Swarm intro** on the first home visit, **music** (an original Web Audio chiptune, off by default), **SEO/GEO**: per-page canonical + Open Graph, a generated share card, Person/WebSite JSON-LD, `robots.txt`, `llms.txt`.
+- **Loading:** sprites and pre-optimized screenshots use native images with reserved dimensions. The hero poster is preloaded; route prefetching is disabled for the main navigation, game button, experience links and project cards. Cursor code loads on the first mouse movement; footer physics load only when visible. Only the selected hero sprites' URLs and dimensions reach its client selector.
 
 ## Open
 

@@ -15,7 +15,7 @@ import hackathon from './hackathon.png';
 import hackathonHead from './hackathon-head.png';
 import hoodie from './hoodie.png';
 import hoodieHead from './hoodie-head.png';
-import run from './run.png';
+import { run } from './run';
 import traveler from './traveler.png';
 import travelerHead from './traveler-head.png';
 import work from './work.png';
@@ -39,5 +39,5 @@ export type Look = keyof typeof looks;
 export const sprites = {
   looks,
   /** 8 equal frames side by side. */
-  run: { src: run, frames: 8, frameWidth: run.width / 8 },
+  run,
 } as const;

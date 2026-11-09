@@ -42,7 +42,7 @@ export default async function ExperiencePage({ params }: Params) {
 
   return (
     <article className="mx-auto flex max-w-5xl flex-col gap-14 px-4 py-12 xl:py-16">
-      <Link href="/#experience" className="w-fit text-muted hover:text-ink">
+      <Link href="/#experience" prefetch={false} className="w-fit text-muted hover:text-ink">
         ← back to the map
       </Link>
 
@@ -94,6 +94,7 @@ export default async function ExperiencePage({ params }: Params) {
       >
         {newer ? (
           <Link
+            prefetch={false}
             href={`/experience/${newer.slug}/`}
             className="rounded-2xl border-2 border-ink p-4 hover:bg-panel"
           >
@@ -105,6 +106,7 @@ export default async function ExperiencePage({ params }: Params) {
         )}
         {older && (
           <Link
+            prefetch={false}
             href={`/experience/${older.slug}/`}
             className="rounded-2xl border-2 border-ink p-4 text-right hover:bg-panel"
           >

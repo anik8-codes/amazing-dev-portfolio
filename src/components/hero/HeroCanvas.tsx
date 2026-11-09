@@ -1,5 +1,15 @@
 import { Terminal } from '@/components/terminal/Terminal';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, intro, reels, socialSpots, terminal } from '@/config/hero';
+import { looks } from '@/assets/sprites';
+import { modes } from '@/config/modes';
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  figurines,
+  intro,
+  reels,
+  socialSpots,
+  terminal,
+} from '@/config/hero';
 import { socials } from '@/config/socials';
 import { HeroFigurines } from './HeroFigurines';
 import { HeroCenter } from './HeroCenter';
@@ -10,10 +20,22 @@ import { SocialTile } from './SocialTile';
 import { VideoWindow } from './VideoWindow';
 import styles from './hero.module.css';
 
+// Send only these four sprites' dimensions and URLs to the selector. The whole sprite
+// registry (including generated blur placeholders) belongs on the server.
+const choices = figurines.map((id) => {
+  const image = looks[id].body;
+  return {
+    id,
+    name: modes.find((mode) => mode.id === id)?.name ?? id,
+    image: { src: image.src, width: image.width, height: image.height },
+  };
+});
+
 /** A bounded, balanced canvas on desktop; compact stacked content below 1024px. */
 export function HeroCanvas() {
   return (
     <section
+      data-swarm-root
       aria-label="anik8 canvas"
       className={styles.canvas}
       style={
@@ -50,7 +72,7 @@ export function HeroCanvas() {
           <Terminal file={terminal.file} compact />
         </Placed>
       </div>
-      <HeroFigurines className={styles.figurines} />
+      <HeroFigurines choices={choices} className={styles.figurines} />
       <div aria-hidden className={styles.focusBackdrop} />
       <span id="read" className="sr-only">
         read mode starts here

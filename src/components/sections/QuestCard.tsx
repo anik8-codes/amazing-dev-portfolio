@@ -1,4 +1,4 @@
-import Image from 'next/image';
+/* eslint-disable @next/next/no-img-element -- pre-optimized screenshots in a static export */
 import Link from 'next/link';
 import type { Quest } from '@/config/quests';
 
@@ -14,13 +14,13 @@ export function QuestCard({ quest, now = false }: { quest: Quest; now?: boolean 
     <>
       <div className="overflow-hidden rounded-xl border border-haze bg-panel">
         {quest.preview ? (
-          <Image
+          <img
             src={quest.preview.src}
             alt={quest.preview.alt}
             width={quest.preview.width}
             height={quest.preview.height}
             loading="lazy"
-            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 360px"
+            decoding="async"
             className="aspect-[343/180] h-auto w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
@@ -42,7 +42,7 @@ export function QuestCard({ quest, now = false }: { quest: Quest; now?: boolean 
   );
   return (
     <article className="group">
-      <Link href={`/projects/${quest.slug}/`} className="block">
+      <Link href={`/projects/${quest.slug}/`} prefetch={false} className="block">
         {body}
       </Link>
     </article>

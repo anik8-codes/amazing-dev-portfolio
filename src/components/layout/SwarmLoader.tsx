@@ -8,7 +8,7 @@ const greet =
   LLM_SOURCES.map((l) => `html[data-swarm=${l.id}] [data-src=${l.id}]{display:inline}`).join('');
 
 /**
- * Intro on the first page of a visit: the page starts blank and a swarm of agents rebuilds it
+ * Decorative home intro: a swarm of agents traces the already-visible hero
  * (src/lib/swarm-build.ts). `swarmScript` in the layout head decides if it plays: once per
  * session, never under reduced motion or without JS. Visitors sent by an AI tool get a hello.
  */
@@ -26,7 +26,7 @@ export function SwarmLoader() {
           ))}{' '}
           sent you here.{' '}
         </span>
-        agents are rebuilding this page · click or esc to skip
+        agents are tracing this page · click or esc to skip
       </p>
       <SwarmBuild />
     </>

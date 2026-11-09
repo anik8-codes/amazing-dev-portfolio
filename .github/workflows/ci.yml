@@ -100,6 +100,7 @@ jobs:
         with:
           name: lighthouse
           path: .lighthouseci/
+          include-hidden-files: true
           retention-days: 7
 
   links:
@@ -121,7 +122,7 @@ jobs:
 
   # T05: preview per PR, production on main. Runs only after every gate passes.
   deploy:
-    needs: [check, gitleaks, e2e, lighthouse, links]
+    needs: [check, workflows, gitleaks, e2e, lighthouse, links]
     # Forked PRs have no secrets, so they skip deploy.
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
@@ -133,6 +134,15 @@ jobs:
       name: ${{ github.event_name == 'push' && 'production' || 'preview' }}
       url: ${{ steps.pages.outputs.deployment-url }}
     steps:
+      - name: Check deployment configuration
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Set CLOUDFLARE_API_TOKEN (Cloudflare Pages Edit) and CLOUDFLARE_ACCOUNT_ID in repository Actions secrets before deploying."
+            exit 1
+          fi
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: site

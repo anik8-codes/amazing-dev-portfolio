@@ -1,4 +1,4 @@
-import { sprites } from '@/assets/sprites';
+import { run } from '@/assets/sprites/run';
 import type { SpriteScale } from './Sprite';
 
 interface Props {
@@ -9,8 +9,6 @@ interface Props {
   label?: string;
   className?: string;
 }
-
-const { run } = sprites;
 
 /** The 8-frame run cycle as a CSS steps() animation (zero JS). Reduced motion shows frame 1. */
 export function RunCycle({ scale = 0.5, still, label, className }: Props) {

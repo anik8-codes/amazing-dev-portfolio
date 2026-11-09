@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { sprites } from '@/assets/sprites';
+import { run } from '@/assets/sprites/run';
 import { Bed } from '@/components/pixel/Bed';
 import { initialClock, stepRunner } from '@/lib/runner';
 import { companionOn, subscribeCompanion } from '@/lib/companion';
@@ -13,7 +13,6 @@ const STOP = 3; // px: closer than this counts as arrived
 const STRIDE = 7; // px travelled per animation frame (legs match the ground)
 const OFFSET = { x: 14, y: 4 }; // sit below-right of the pointer so it stays visible
 
-const { run } = sprites;
 const FRAME_W = run.frameWidth * SCALE;
 const FRAME_H = run.src.height * SCALE;
 
@@ -66,6 +65,7 @@ export function RunnerCursor() {
         node.hidden = false;
       }
       target = { x: e.clientX + OFFSET.x, y: e.clientY + OFFSET.y };
+      if (!raf) raf = requestAnimationFrame(tick);
     };
 
     const tick = (now: number) => {
@@ -96,7 +96,6 @@ export function RunnerCursor() {
     };
 
     window.addEventListener('pointermove', onMove);
-    raf = requestAnimationFrame(tick);
     return () => {
       window.removeEventListener('pointermove', onMove);
       cancelAnimationFrame(raf);

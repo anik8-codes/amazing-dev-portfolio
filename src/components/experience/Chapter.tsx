@@ -46,6 +46,7 @@ export function Chapter({ job, index }: { job: Job; index: number }) {
         </div>
         <TechChips names={job.stack} />
         <Link
+          prefetch={false}
           href={`/experience/${job.slug}/`}
           className="w-fit rounded-full border-2 border-ink bg-white px-5 py-2.5 font-semibold transition hover:-translate-y-0.5 hover:bg-ink hover:text-white"
         >

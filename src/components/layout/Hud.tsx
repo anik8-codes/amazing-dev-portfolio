@@ -9,7 +9,7 @@ export function Hud() {
   return (
     <header className="sticky top-0 z-50 border-b border-haze bg-white">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 xl:px-8">
-        <Link href="/" aria-label="anik8 home" className="shrink-0">
+        <Link href="/" prefetch={false} aria-label="anik8 home" className="shrink-0">
           <Wordmark cell={4} className="h-auto w-[118.5px] sm:w-[158px]" />
         </Link>
         <nav
@@ -20,6 +20,7 @@ export function Hud() {
             <Link
               key={n.href}
               href={n.href}
+              prefetch={false}
               className="text-muted transition-colors hover:text-ink"
             >
               {n.label}

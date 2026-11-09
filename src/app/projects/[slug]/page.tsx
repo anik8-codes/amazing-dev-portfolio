@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element -- screenshots are pre-optimized for static hosting */
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { RoleLadder } from '@/components/experience/RoleLadder';
@@ -60,7 +60,7 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <article className="mx-auto flex max-w-4xl flex-col gap-12 px-4 py-12 xl:py-16">
-      <Link href="/#projects" className="w-fit text-muted hover:text-ink">
+      <Link href="/#projects" prefetch={false} className="w-fit text-muted hover:text-ink">
         ← all projects
       </Link>
 
@@ -81,13 +81,13 @@ export default async function ProjectPage({ params }: Params) {
       </header>
 
       {q.preview && (
-        <Image
+        <img
           src={q.preview.src}
           alt={q.preview.alt}
           width={q.preview.width}
           height={q.preview.height}
-          priority
-          sizes="(max-width: 896px) 100vw, 896px"
+          fetchPriority="high"
+          decoding="async"
           className="h-auto w-full rounded-2xl border border-haze"
         />
       )}
@@ -166,6 +166,7 @@ export default async function ProjectPage({ params }: Params) {
             ))}
           </ul>
           <Link
+            prefetch={false}
             href={`/experience/${job.slug}/`}
             className="w-fit text-muted underline underline-offset-4"
           >
@@ -193,6 +194,7 @@ export default async function ProjectPage({ params }: Params) {
       >
         {prev ? (
           <Link
+            prefetch={false}
             href={`/projects/${prev.slug}/`}
             className="rounded-2xl border-2 border-ink p-4 hover:bg-panel"
           >
@@ -204,6 +206,7 @@ export default async function ProjectPage({ params }: Params) {
         )}
         {next && (
           <Link
+            prefetch={false}
             href={`/projects/${next.slug}/`}
             className="rounded-2xl border-2 border-ink p-4 text-right hover:bg-panel"
           >

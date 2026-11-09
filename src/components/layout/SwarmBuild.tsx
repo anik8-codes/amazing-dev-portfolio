@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 export function SwarmBuild() {
   useEffect(() => {
     const html = document.documentElement;
-    const root = document.getElementById('main');
+    const root = document.querySelector<HTMLElement>('[data-swarm-root]');
     if (!html.dataset.swarm || !root) return;
     let disposed = false;
     const controller = new AbortController();

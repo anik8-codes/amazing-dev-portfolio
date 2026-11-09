@@ -18,7 +18,7 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
 
   > deferred: gitleaks runs in pre-commit only if installed locally (`brew install gitleaks`); CI enforces it in T03. Branch protection on `main` is a GitHub setting, applied with the repo in T03/T04. Extra: commitlint also rejects AI co-author trailers and "Generated with" footers.
 
-- [x] **T03 CI**
+- [ ] **T03 CI**
   - Read: requirements §3 (Infra), §9, §12.
   - Build: GitHub Actions — `check` (typecheck, lint, test, build), gitleaks, PR-title conventional check, Lighthouse CI with budgets from §9, Playwright smoke + axe, link check; release-please workflow.
   - Done when: workflows pass locally with `act` or on a pushed branch, and a budget breach fails the Lighthouse job.
@@ -27,6 +27,10 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
   > extras: every action pinned to a commit SHA (Renovate `helpers:pinGitHubActionDigests` keeps them fresh), `persist-credentials: false`, knip in `check`. `.lycheeignore` lists hero links to pages not built yet; delete each line when its page ships.
 
   > notes: Lighthouse uses `devtools` throttling, because simulated throttling reported LCP 2.15 s against a real 1.4 s for the Next static export. JS budget is provisional 160 KB pending decision 12. Reports stay private (filesystem + CI artifact, no public upload). INP is checked via TBT ≤ 200 ms in lab.
+
+  > reopened (10 Nov): real GitHub runs passed check, workflows, gitleaks, e2e and links, but Lighthouse failed (home LCP ~15 s, excess JS). The swarm no longer hides content; the hero poster is preloaded, image runtime and unused client sprite metadata removed, and decoration code deferred. Lighthouse artifacts now include the hidden report directory. Release-please's repository permission was enabled and its rerun passed. Reconfirm the corrected Lighthouse job on GitHub before closing T03; existing budgets remain unchanged.
+
+  > local verification (10 Nov): `pnpm check`, lint, knip, build, 33 unit tests and 8 desktop/390 px browser + axe checks pass. The same LHCI 0.15 assertions pass on home and Botmartz: performance 98/99, LCP 1.69/1.83 s, script transfers 160,318/146,658 bytes against the unchanged 163,840-byte ceiling. Other experience pages share the corrected client bundle; the full GitHub run remains the final check.
 
 - [ ] **T04 Infra as code**
   - Read: requirements §3 (Infra), §13.
@@ -38,7 +42,7 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
 - [ ] **T05 Deploy pipeline**
   - Build: preview deploy per PR and production deploy on `main` to Cloudflare Pages; build info (commit SHA, time) exposed for `/infra`.
   - Done when: a PR gets a preview URL comment and merging updates production.
-  > status (9 Nov): `deploy` job in `ci.yml` (after every gate; preview per PR with a sticky URL comment, production on `main`; forks skipped). Build info at `/build.json` via `src/lib/build-info.ts`. **Open:** needs the GitHub repo + Cloudflare secrets to run.
+  > status (10 Nov): `deploy` job in `ci.yml` (after every gate, including workflow validation; preview per PR with a sticky URL comment, production on `main`; forks skipped). Build info at `/build.json` via `src/lib/build-info.ts`. The personal Pages project is deployed, both custom-domain DNS records point to it, and `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` are configured in GitHub Actions secrets. A credential preflight explains missing configuration. **Open:** verify a successful production CI deploy and PR preview after the corrected performance gate passes.
 
 ## P1 — READ mode → launch
 

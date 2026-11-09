@@ -24,7 +24,7 @@ export function Footer() {
         <div className="flex flex-col justify-between gap-6 text-sm text-muted md:flex-row">
           <nav aria-label="footer" className="flex flex-wrap gap-x-6 gap-y-2">
             {[...hud.nav, { label: 'now', href: '/now' }, hud.book].map((n) => (
-              <Link key={n.href} href={n.href} className="hover:text-ink">
+              <Link key={n.href} href={n.href} prefetch={false} className="hover:text-ink">
                 {n.label}
               </Link>
             ))}

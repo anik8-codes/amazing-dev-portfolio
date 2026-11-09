@@ -1,8 +1,7 @@
 /*
- * Swarm rebuild: the hero starts blank (CSS hides [data-swarm-root] while html[data-swarm] is
- * set), then a few named cursor "agents" take its blocks top to bottom: fly to the block, drag a
- * selection box with a W × H badge, and the block appears (text types in left to right, media
- * sweeps down). Our own take on the idea behind Joel Califa's Swarm. Loaded only when it plays.
+ * Decorative cursor agents trace the visible hero with selection boxes and size badges.
+ * Content never disappears or animates: the intro must not delay reading or LCP.
+ * Our own take on Joel Califa's Swarm. Loaded only when it plays.
  */
 
 const AGENTS = ['next', 'hono', 'tofu', 'd1', 'r2', 'kv', 'pnpm', 'vitest'];
@@ -46,9 +45,6 @@ function blocks(root: Element): HTMLElement[] {
   return out.sort((a, b) => boxOf(a).y - boxOf(b).y || boxOf(a).x - boxOf(b).x);
 }
 
-const isText = (el: HTMLElement) =>
-  !el.querySelector('img,svg,video,canvas,iframe') && (el.textContent ?? '').trim().length > 0;
-
 /** Rebuild `root` with a swarm. Resolves when done; aborting cleans up and shows everything. */
 export async function runSwarm(root: HTMLElement, signal: AbortSignal): Promise<void> {
   const todo = blocks(root);
@@ -60,7 +56,7 @@ export async function runSwarm(root: HTMLElement, signal: AbortSignal): Promise<
     left: '0',
     top: '0',
     width: '100%',
-    height: `${document.documentElement.scrollHeight}px`,
+    height: `${Math.max(innerHeight, root.getBoundingClientRect().bottom + scrollY)}px`,
     overflow: 'hidden',
     pointerEvents: 'none',
     zIndex: '100',
@@ -70,7 +66,6 @@ export async function runSwarm(root: HTMLElement, signal: AbortSignal): Promise<
   const cleanup = () => {
     anims.forEach((a) => a.cancel());
     layer.remove();
-    todo.forEach((el) => el.style.removeProperty('visibility'));
   };
   signal.addEventListener('abort', cleanup, { once: true });
 
@@ -160,23 +155,7 @@ export async function runSwarm(root: HTMLElement, signal: AbortSignal): Promise<
     ]);
     if (signal.aborted) return;
 
-    el.style.visibility = 'visible';
-    const text = isText(el);
-    const chars = (el.textContent ?? '').trim().length;
-    const dur = text ? Math.min(900, 150 + chars * 30) : 380;
-    await Promise.all([
-      play(
-        el,
-        text
-          ? [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }]
-          : [
-              { clipPath: 'inset(0 0 100% 0)', opacity: 0.3 },
-              { clipPath: 'inset(0 0 0 0)', opacity: 1 },
-            ],
-        { duration: dur, easing: text ? `steps(${Math.min(32, Math.max(4, chars))})` : 'ease-out' },
-      ),
-      play(sel, [{ opacity: 1 }, { opacity: 0 }], { duration: dur + 150, fill: 'forwards' }),
-    ]);
+    await play(sel, [{ opacity: 1 }, { opacity: 0 }], { duration: 380, fill: 'forwards' });
     sel.remove();
   };
 
