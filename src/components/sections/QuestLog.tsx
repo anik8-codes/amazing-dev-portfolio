@@ -1,11 +1,9 @@
-import { currentQuest, quests } from '@/config/quests';
-import { CurrentQuestCard } from './CurrentQuestCard';
+import { quests } from '@/config/quests';
 import { QuestCard } from './QuestCard';
 import { Section } from './Section';
 
-/** World 1-2: projects. The current quest is featured first, then everything else. */
+/** World 1-2: projects, as a compact grid. The first one is what's being built right now. */
 export function QuestLog() {
-  const rest = quests.filter((q) => q.slug !== currentQuest.slug);
   return (
     <Section
       id="projects"
@@ -13,16 +11,13 @@ export function QuestLog() {
       title="projects"
       kicker="what i'm building now, and what i've shipped."
     >
-      <div className="flex flex-col gap-6">
-        <CurrentQuestCard />
-        <ul className="grid gap-6 md:grid-cols-2">
-          {rest.map((q) => (
-            <li key={q.slug}>
-              <QuestCard quest={q} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        {quests.map((q, i) => (
+          <li key={q.slug}>
+            <QuestCard quest={q} now={i === 0 && q.status === 'in progress'} />
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 }

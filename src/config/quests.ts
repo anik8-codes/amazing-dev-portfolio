@@ -1,5 +1,4 @@
-export type Rarity = 'legendary' | 'rare' | 'common';
-export type QuestStatus = 'shipped' | 'in progress' | 'stealth';
+type QuestStatus = 'shipped' | 'in progress' | 'stealth';
 
 export interface Quest {
   slug: string;
@@ -8,7 +7,14 @@ export interface Quest {
   pitch: string;
   /** The number or outcome that matters. */
   result?: string;
-  rarity: Rarity;
+  /** When it happened, e.g. '2025–2026'. */
+  year?: string;
+  /** Experience slug (src/config/experience.ts) when this was built at a job: its role, work and stack show on the project page. */
+  job?: string;
+  /** How it works, one line each (for the project's own page). */
+  features?: string[];
+  /** A write-up about it. */
+  update?: { href: string; label: string };
   status?: QuestStatus;
   /** Tech as text labels (brand: no logo walls). */
   stack: string[];
@@ -26,8 +32,17 @@ const featuredQuest = {
   pitch:
     'observability and automatic fixes for api drift, including changes in meaning that a structural diff misses.',
   result: 'current quest',
-  rarity: 'legendary',
+  year: '2026',
   status: 'in progress',
+  features: [
+    'learns dependency behavior from real traffic, in-process with no proxy hop',
+    'detects structural, semantic and availability drift',
+    'heals confident changes, flags uncertainty and validates applied fixes',
+  ],
+  update: {
+    href: 'https://undrift.anik8.me/newsletter/the-silent-200',
+    label: 'read the product update',
+  },
   stack: [],
   href: 'https://undrift.anik8.me',
   preview: {
@@ -47,15 +62,17 @@ export const quests: readonly Quest[] = [
     pitch:
       'on-demand creative services: book video editors, designers and ai specialists, with an expert assigned instantly.',
     result: '45,000+ users during my tenure',
-    rarity: 'legendary',
+    year: '2025–2026',
+    job: 'unjob',
     status: 'shipped',
     stack: ['next.js', 'node.js', 'postgresql', 'aws'],
     href: 'https://unjob.ai',
     preview: {
+      // image: shishir24.in (Shishir Shrivastava, who worked on Unjob.ai with Aniket)
       src: '/projects/unjob.webp',
-      alt: 'Unjob landing page with creative services and its current seasonal promotion',
+      alt: 'Unjob.ai on a tablet: book AI experts in seconds, with service categories below',
       width: 1440,
-      height: 810,
+      height: 960,
     },
     publishedStats: [{ value: '200K+', label: 'users' }],
     evidence: { href: 'https://unjob.ai', label: 'platform reports', checked: '10 Nov 2026' },
@@ -65,7 +82,7 @@ export const quests: readonly Quest[] = [
     title: 'Launchday',
     pitch:
       'an ai launchpad for websites, logos and social posts, with lead capture, bookings and a showcase directory.',
-    rarity: 'rare',
+    // TODO(content): Aniket to confirm Launchday's year.
     status: 'shipped',
     // TODO(content): confirm the implementation stack with Aniket.
     stack: [],
@@ -88,20 +105,3 @@ export const quests: readonly Quest[] = [
     },
   },
 ];
-
-/** The spotlight project at the top of Projects. */
-export const currentQuest = {
-  ...featuredQuest,
-  tagline: featuredQuest.pitch,
-  liveLabel: 'visit live site',
-  featuresLabel: 'how it works',
-  features: [
-    'learns dependency behavior from real traffic, in-process with no proxy hop',
-    'detects structural, semantic and availability drift',
-    'heals confident changes, flags uncertainty and validates applied fixes',
-  ],
-  details: {
-    href: 'https://undrift.anik8.me/newsletter/the-silent-200',
-    label: 'read the product update',
-  },
-};
