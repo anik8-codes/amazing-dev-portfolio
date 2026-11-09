@@ -1,0 +1,91 @@
+# Roadmap
+
+Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task: **Read** = spec sections to load first · **Build** = scope · **Done when** = the check that closes it. Tick `[x]` and add a `> deferred:` note for anything left out.
+
+## P0 — Foundation
+
+- [x] **T01 Scaffold**
+  - Read: requirements §3, brand.md (tokens, type).
+  - Build: Next.js App Router (static export) + TypeScript strict + native `sitemap.ts`; Tailwind v4 `@theme` with every brand token; Press Start 2P + Manrope self-hosted via `next/font`; root layout (white body, skip link, `lang`, meta); folders `src/{app,components,config,content,lib}`, `worker/`, `infra/`, `media/`; `pnpm` scripts `dev`, `build`, `preview`, `check`, `lint`, `format`, `test`.
+  - Done when: `pnpm build` passes and `/` shows the pixel wordmark on white using only tokens.
+
+  > deferred: MDX wiring → T11 (pick `@next/mdx` vs `next-mdx-remote` with the content schema). JS budget → decision 12. `pnpm check` is `tsc --noEmit`; TypeScript pinned to 6 until typescript-eslint supports 7.
+
+- [x] **T02 Repo hygiene**
+  - Read: requirements §12.
+  - Build: Husky (`commit-msg` → commitlint conventional; `pre-commit` → lint-staged with Prettier + ESLint; `pre-push` → `pnpm check` + tests), Prettier (with the Tailwind plugin), ESLint flat config, `.editorconfig`, `.nvmrc`, `.gitignore`, `.env.example`, gitleaks config, LICENSE (MIT code) + `ASSETS_LICENSE.md` (art/music/posts all rights reserved), README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, issue + PR templates, CODEOWNERS, `renovate.json`.
+  - Done when: a commit with message `bad message` is rejected, `chore(repo): test` passes, and a staged file is auto-formatted.
+
+  > deferred: gitleaks runs in pre-commit only if installed locally (`brew install gitleaks`); CI enforces it in T03. Branch protection on `main` is a GitHub setting, applied with the repo in T03/T04. Extra: commitlint also rejects AI co-author trailers and "Generated with" footers.
+
+- [x] **T03 CI**
+  - Read: requirements §3 (Infra), §9, §12.
+  - Build: GitHub Actions — `check` (typecheck, lint, test, build), gitleaks, PR-title conventional check, Lighthouse CI with budgets from §9, Playwright smoke + axe, link check; release-please workflow.
+  - Done when: workflows pass locally with `act` or on a pushed branch, and a budget breach fails the Lighthouse job.
+
+  > done (9 Nov) via `act`: check, gitleaks, e2e, links, workflows (actionlint + zizmor) pass; a forced JS-budget breach fails LHCI. Under `act` on Apple silicon the x86 container is CPU-emulated, so Lighthouse TBT/perf fail there only; natively perf = 100. **Re-confirm Lighthouse on the first real GitHub run.**
+  > extras: every action pinned to a commit SHA (Renovate `helpers:pinGitHubActionDigests` keeps them fresh), `persist-credentials: false`, knip in `check`. `.lycheeignore` lists hero links to pages not built yet; delete each line when its page ships.
+
+  > notes: Lighthouse uses `devtools` throttling, because simulated throttling reported LCP 2.15 s against a real 1.4 s for the Next static export. JS budget is provisional 160 KB pending decision 12. Reports stay private (filesystem + CI artifact, no public upload). INP is checked via TBT ≤ 200 ms in lab.
+
+- [ ] **T04 Infra as code**
+  - Read: requirements §3 (Infra), §13.
+  - Build: OpenTofu in `infra/` for Cloudflare: Pages project, R2 bucket (media), D1 database, KV namespace, DNS records for the chosen domain; remote state; `tofu plan` on PR, `apply` on `main` from CI; `.gitignore` covers plans and state.
+  - Done when: `tofu validate` passes and the CI plan job prints a plan without committing any plan file.
+
+  > status (9 Nov): `infra/` (Pages project + apex/www DNS + custom domain, R2 media, D1, KV), R2 remote state, `infra.yml` (plan on PR, apply on main, one-at-a-time). `tofu fmt` + `tofu validate` pass. **Open:** needs a Cloudflare account, API token, zone and the `tofu-state` bucket (names in `.env.example`) before the CI plan can run.
+
+- [ ] **T05 Deploy pipeline**
+  - Build: preview deploy per PR and production deploy on `main` to Cloudflare Pages; build info (commit SHA, time) exposed for `/infra`.
+  - Done when: a PR gets a preview URL comment and merging updates production.
+  > status (9 Nov): `deploy` job in `ci.yml` (after every gate; preview per PR with a sticky URL comment, production on `main`; forks skipped). Build info at `/build.json` via `src/lib/build-info.ts`. **Open:** needs the GitHub repo + Cloudflare secrets to run.
+
+## P1 — READ mode → launch
+
+- [x] **T06 Pixel kit** — Read: brand.md (motifs, sprites). Build: `Wordmark`, `Hearts`, `XpBar`, `PixelWindow`, `ControllerButton`, `SelectionCorners`, `Sprite` (+ sprite-cutting script from `brand/anik8-looks.png`). Done when: a `/kit` dev page shows every component at all sizes, pixel-crisp at 1×/2×.
+  > done (9 Nov): `src/components/pixel/` (PixelSvg base, Wordmark, Hearts, XpBar, PixelWindow, ControllerButton, SelectionCorners, Sprite, RunCycle), `scripts/cut-sprites.mjs` (`pnpm sprites`), typed registry `src/assets/sprites/index.ts`. Fixes vs brand.md: title-pill erase extended to y 44 (its border bled into work/creator); heads cropped to cap width. Heads + favicon are drafts until hand-pixelled. `/kit` is noindex and excluded from Lighthouse.
+- [x] **T07 Hero canvas (static)** — Read: requirements §4a. Build: HUD, grid canvas, pixel windows with poster images, figurines, cartridges, handheld, rack, centre title + A/B buttons, intro window; responsive mobile layout. Done when: matches `docs/mockups/hero-v3.png` at 1600 px and reads cleanly at 390 px with zero JS.
+  > done (9 Nov): `src/components/hero/*` + `src/components/layout/Hud.tsx`, all content/positions in `src/config/{hero,hud,modes}.ts`. Zero client components (only the Next runtime ships). Home: Lighthouse perf/a11y/SEO 100, LCP 1.5 s, CLS 0; axe clean at desktop + 390 px. Canvas layout from `xl` (1280 px), stacked below.
+  > revised (9 Nov, Aniket's review): full name + headline "devops, backend & ai engineer" in the centre; mode chip and "11.9k players" badge removed; intro moved into the first screen, reels cut to 2; GitHub/X/YouTube/Instagram tiles placed on the canvas (`src/config/socials.ts`); the whoami.sh window opens a typeable terminal (`src/components/terminal/Terminal.tsx`, commands in `src/lib/terminal.ts`, content in `src/config/terminal.ts`). Client JS now: terminal + cursor runner (home 152 KB gz total, Next runtime ≈ 140).
+  > revised (9 Nov, media review): supplied intro above the name and buttons, one real MaxCode supporting reel, social icons spread toward the edges. Removed the handheld, uptime rack and second/vlog hero window. Posters + native controls, click to play, no autoplay; intro letterboxing removed in the serving copy. The two supplied MaxCode photos appear on the home chapter and detail page.
+  > media correction (9 Nov): the supporting hero reel is now the supplied `open-dots.mp4` from Drive (full 24 seconds, audio retained, compressed to 540 × 960). It replaces the MaxCode working clip; the intro and experience photos remain.
+  > revised (9 Nov, hover/photo review): Hey Clicky-style muted intro autoplay; hovering a video plays it with audio after browser activation, leaving the supporting reel pauses it and restores the muted intro. Small `HeroVideo` client leaf coordinates playback, respects explicit mute/pause and reduced motion, and pauses offscreen/hidden-tab videos. Browser-blocked audio falls back to muted playback. Native controls remain for touch and keyboard. All experience photos now appear only on read-more pages.
+  > deferred: remaining reels and experience photos, per-mode pitches (TODO(content)); move local video files to R2 when the media bucket is connected. View/follower counts stay omitted until real values are provided.
+- [ ] **T08 Modes** — Read: §4a (Modes). Build: 10-mode state, figurine + chip + keyboard switching, favicon + title swap, hidden-tab favicon, `#mode` hash, per-mode pitch/reels/A target. Done when: every mode is reachable by click, keys and URL, and the favicon changes.
+  > revised (10 Nov, Aniket's review): the four hero figurines are native buttons with shared inline selection and `aria-pressed`, not page/hash links. Selecting Gamer, Creator, Builder or Chill keeps the current URL and scroll position. No dedicated pages for these looks. Full favicon/title/pitch switching remains deferred. Typecheck, focused hero lint and Webpack export pass; full lint currently reports errors in `components/play/Player.tsx`. Desktop rendering was inspected; interaction and 390 px QA remain unverified after native browser state/capture errors.
+- [x] **T09 Running-me cursor** — Read: §4a. Build: run-cycle follower (8 frames, flips direction, idles in Default pose); off on touch, reduced motion, and via footer toggle. Done when: smooth at 60 fps and absent under reduced motion.
+  > done (9 Nov): `src/components/layout/RunnerCursor.tsx` + pure mood machine `src/lib/runner.ts` (tested). Eased follow, legs advance per 7 px travelled, whole-pixel positions, run strip cells padded to 120 px. Moods: run → tired (pant + sweat after >1.5 s running) → idle → sleep (after 6 s: tucked into a pixel bed, `src/components/pixel/Bed.tsx`, with z's). Off on touch + reduced motion.
+  > deferred: idle + tired stances need new art (brief in brand.md → "Sprites wanted"); until then they reuse run frame 1 + pixel effects. Footer on/off toggle → T12.
+- [ ] **T10 Hero interactions** — Build: drag for windows/props, bring-to-front, hover lift; reel loops on view (WebM/MP4 from R2). Done when: drag works with mouse and keyboard-accessible alternatives exist.
+- [ ] **T11 Content collections** — Read: §4. Build: typed schemas + pages for `quests`, `blog` (series, tags, RSS, `.md` twins), `lore`, `now`, `inventory`, `resume`, `404`. Done when: one sample entry per collection renders and RSS validates.
+- [ ] **T12 Scroll = run** — Read: §4b. Build: scroll-scrubbed runner, parallax layers (CSS scroll-driven animations), Current quest, Experience levels (pinned horizontal), Quest log (stacking cards + view-transition to case study), Broadcast strip, Inventory, Logs, High scores, CONTINUE screen, footer. Done when: 60 fps on a mid laptop, CLS 0, fully static under reduced motion.
+  > status (9 Nov): home sections + native CSS parallax, pinned horizontal Levels on wide/tall viewports (keyboard focus reveals each checkpoint), sticky quest rows with fan-out, inventory entrances, scroll-scrubbed runner that docks at the footer, remembered companion toggle (also controls the cursor), and visible-only 9→0 countdown. Reduced motion keeps the normal static layout and disables the countdown/runner; unsupported browsers keep the static sections. Desktop and 390 px visually reviewed. `pnpm check`, lint and unit tests pass; production export passes with `pnpm build --webpack`. Standard Turbopack build hits the environment's local-port permission error even after the approved retry.
+  > deferred: case-study morph waits for T11 pages; live high-score counters → T20; real Broadcast media and speed response, Current quest pinning, environment art variants, and measured 60 fps / CLS verification remain before closing T12. Current quest pinning and any additional media still need follow-up.
+  > revised (9 Nov, Aniket's review): the hero's 32 px white grid continues across the sections, CONTINUE screen and footer, with one grid row below the ground tiles.
+  > revised (9 Nov, home scope): removed Broadcast, Logs and High scores (including unused components and config). Projects is limited to Undrift → Unjob.ai → Launchday.ai, with the supplied live links; Undrift's featured button now opens `https://undrift.anik8.me`. Landing-page screenshots and sourced feature descriptions added after checking public pages; published platform stats are separated from personal milestones. Launchday implementation stack still awaits confirmation. See `docs/project-sources.md`. All three browser captures are saved and optimized; check/lint and Webpack export pass; knip flags unused Three.js dependencies elsewhere in the working tree. Updated desktop/390 px layout QA remains deferred: the native browser capture session repeatedly timed out after the project captures.
+  > partly done (10 Nov): home is hero → experience (pinned scroll chapters with the runner on a road, duotone place illustrations from `pnpm scenes`) → projects → player 1 (GitHub card + contribution graph, `pnpm github-profile`) → skills (bento of 106 skills with real logos, `pnpm tech-icons` + `pnpm tech-stats`) → broadcast → logs → high scores → continue. Experience has detail pages at /experience/<slug>/. Left: parallax layers, pinned horizontal sections, card stacking.
+- [ ] **T13 SEO + GEO** — Read: §7. Build: meta, canonical, JSON-LD set, Satori OG images, `llms.txt` + `llms-full.txt`, robots per decision 5. Done when: Rich Results test passes for home, a post, a quest.
+- [ ] **T14 Book + contact** — Read: §3 (Backend, Integrations). Build: Cal.com embed on `/book` + floating button; Hono worker contact endpoint with Turnstile + Resend. Done when: a test booking and a test message both arrive.
+- [ ] **T15 Analytics** — Read: §8. Build: Cloudflare Web Analytics + Umami with the §8 events. Done when: events show in Umami from the preview deploy.
+- [ ] **T16 Launch checklist** — Done when: Lighthouse ≥ 95 ×4 on home/post/quest, axe clean, domain live, Search Console + Bing verified, sitemap submitted.
+
+## P2 — Juice
+
+- [ ] **T17 Sound system** — §5. Howler, mute toggle, SFX set (jsfxr), mode stings, music only after PRESS START.
+  > partly done (9 Nov): SFX engine `src/lib/sfx.ts` (Web Audio, after the previous portfolio: hover whoosh, click.mp3, on/off arpeggio; plus START coin and terminal key ticks), page-wide `SoundLayer`, HUD toggle (off by default, remembered). **Left:** mode stings (T08), music after PRESS START (decision 2), Howler only if music needs it.
+- [ ] **T18 ⌘K palette + terminal easter egg + Konami**.
+- [ ] **T19 Likes, views, guestbook** — Worker + D1, GitHub sign-in for guestbook, rate limits.
+- [ ] **T20 `/stats` and `/infra`** — live counters, uptime (Upptime), Lighthouse scores, pipeline view.
+- [ ] **T21 Giscus comments + newsletter**.
+
+## P3 — PLAY mode
+
+- [x] **T22 World shell** — §6. R3F scene, loading screen, sprite billboard controller (WASD + touch), skip-to-READ.
+  > done (10 Nov): /play is a three.js (react-three-fiber) island loaded only on that page. anik8 is a 3D articulated figure (src/components/play/models/Avatar.tsx) with an eased walk/run cycle; keys, tap-to-walk, and scroll/swipe walk the road through time. Colliders keep him out of props. Loading screen, read-mode exit, chapter list fallback (no WebGL), reduced motion, day/dusk palettes by theme.
+- [ ] **T23 Stations** — spawn, quest board, library, DevOps factory (live CI status), arcade, portal.
+  > partly done (10 Nov): 9 chapters as stations (src/config/lore.ts) and ~40 places with stories: rajwada, ips academy, poha cart, gdsc stage, baja buggy, tedx, iit madras books, the remote desk, hackathon arena (hackwave trophy + banners), qualimatrix, promptfoo coins, india gate, noida towers, cto office, aws servers, new bike, new iphone, ring light, cookie jar, portal. Left: LinkedIn/Instagram posts + photos per chapter, confirm hackathon wins/mentoring, devops factory with live CI.
+- [ ] **T24 World polish** — NPC speech, music, perf budgets (§6), low-power mode.
+
+## P4 — Extras
+
+- [ ] **T25 "Ask anik8" NPC**.
