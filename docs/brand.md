@@ -51,6 +51,7 @@ Cell sizes in use: 4 px (nav), 16 px (hero), 20 px (deck covers). The live READM
 - **Heart:** 7 × 6 grid `.XX.XX. / XXXXXXX / XXXXXXX / .XXXXX. / ..XXX.. / ...X...`; full = red, empty = `#e4dff0`; five hearts, four full.
 - **XP bar:** `#efecf5` track, orange fill, small `XP` label in muted.
 - **Pixel window:** square corners, 3 px ink frame, 26 px title bar with Press Start 2P title and a pixel × box, 6 px offset shadow in haze.
+- **Hero video windows (Aniket's 10 Nov review):** Mac-style rounded frame, a compact filename bar and decorative traffic lights. Tokens: `window-close` = `#ff5f57`, `window-minimize` = `#febc2e`, `window-maximize` = `#28c840`. This is the requested exception to pixel window chrome; terminal windows retain their pixel frame. Hover/keyboard focus leaves the active video sharp while a fixed, nonblocking 4 px backdrop blur softens the rest of the viewport. Cards stay opaque.
 - **Controller button:** ink 3 px border, 6 px ink offset shadow that collapses on press; round letter key (A red-on-white / B white-on-ink).
 - **Selection corners:** red L-brackets, 6 px thick, around the selected item.
 - **Grid canvas:** 32 px haze grid lines at ~35 % opacity.

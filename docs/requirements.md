@@ -124,6 +124,8 @@ Mockup: `docs/mockups/hero-v3.png` (9 Nov 2026; striped windows are reel placeho
 
 **Hover and photo review (9 Nov 2026):** match Hey Clicky's playback behavior: the central intro loops muted while visible; hover starts the active video with audio after browser user activation, and leaving the supporting reel pauses it. Only one video plays at a time; the intro resumes muted after leaving the reel. Native controls provide tap/keyboard playback and mute. Reduced motion keeps posters until explicit playback; offscreen or hidden-tab videos pause. This media behavior is an exception to the click-only site-SFX default in §5. Experience photos belong **only on the read-more pages**, for every company; the home roadmap keeps its illustrations and character art.
 
+**Latest hero layout review (10 Nov 2026):** remove the Quests/Blog/Learn navigation and all hero cartridges; keep Projects and Resume in the HUD. Compact the desktop hero from 920 px to 728 px, bounded to 1600 px wide, with the canvas layout from 1024 px. Intro remains above the name, with a smaller supporting reel and terminal on opposing outer edges. Arrange the seven socials in three mirrored pairs around the wordmark and one centred below; the four inline character selectors become a compact row. Both video players use Mac-style traffic lights and filename bars. Hover anywhere on a window starts its existing playback behavior and keeps that card sharp above a slight viewport backdrop blur; keyboard focus gets the same treatment. Native controls remain usable; no modal, blocked background clicks or extra focus trap. Preserve reduced-motion states and a compact mobile layout.
+
 - **`/play`** — the 3D lore world (section 6).
 - **`/lore`** — about, told as levels (Indore → first code → hackathons → CTO → now) + character select (10 looks = 10 facets).
 - **`/quests`** + **`/quests/[slug]`** — projects as case studies: problem, architecture diagram, stack (text, no logos), results, links. Written fresh (start with Undrift, Kyte, AI voice receptionist, AI website builder, OSS).
@@ -135,7 +137,8 @@ Mockup: `docs/mockups/hero-v3.png` (9 Nov 2026; striped windows are reel placeho
 - **`/guestbook`** — sign in with GitHub, leave a message, pixel-heart reactions.
 - **`/stats`** — public "high scores": visitors, top posts, likes, uptime, Lighthouse scores, AI-referral traffic.
 - **`/infra`** — how this site is built and deployed: live diagram, last deploy SHA/time, pipeline status.
-- **`/resume`** — HTML + PDF.
+- **`/resume`** — HTML + PDF. Aniket's 10 Nov review: reuse the old portfolio's PDF iframe viewer, with direct open/download fallbacks; make it discoverable in main navigation and footer. Serve the original PDF locally (the old GitHub Pages URL is broken; its source moved to `anik8-codes/Aniket-CV-25`).
+- **Home `#workspace` — my setup** — Aniket's revised 10 Nov review: the virtual environment is embedded directly after Experience, separate from Botmartz. Botmartz uses its Gandhi Hall illustration. The desk loads automatically as the section approaches; a scroll-driven sticky frame expands to fill the viewport, then releases into Projects. No enter button or separate workspace page. Keep natural wheel/touch page scrolling, keyboard-accessible camera presets and a continue-to-projects link. Reduced motion and unsupported browsers use a static full-width section. Pause rendering offscreen/hidden, and keep direct resume access if WebGL fails. Reuse Henry Heffernan's MIT-licensed models and adapted screen/camera code with visible credit/full licence; the local monitor opens Aniket's resume. Legacy `/office/` links redirect to `/#workspace`; `/office/screen/` is only an internal monitor surface.
 - **`/404`** — "GAME OVER · CONTINUE?" with the run cycle.
 - **Global:** ⌘K command palette, terminal easter egg, sound toggle, footer with socials.
 
@@ -163,7 +166,7 @@ As you scroll, the run-cycle sprite runs along a ground line at the bottom of th
 9. **"CONTINUE?" screen** — arcade continue countdown (10…9…) with the "book a call" button; at 0 it shows "GAME OVER — just kidding, say hi".
 10. **Footer** — ground tiles; the sprite stops and idles; socials and RSS.
 
-**Current home scope (Aniket's review, 9 Nov 2026):** remove Broadcast, Logs and High scores from the landing page. Keep hero → experience → projects → GitHub/player 1 → skills → CONTINUE → footer. Projects contains exactly three entries, in order: **Undrift** (`https://undrift.anik8.me`), **Unjob.ai** (`https://unjob.ai`), **Launchday.ai** (`https://thelaunchday.ai`). Undrift remains the featured current quest; its button goes directly to the supplied live site. More project details and entries will follow from Aniket.
+**Current home scope (Aniket's review, 9 Nov 2026):** remove Broadcast, Logs and High scores from the landing page. Keep hero → experience → my setup → projects → GitHub/player 1 → skills → CONTINUE → footer. Projects contains exactly three entries, in order: **Undrift** (`https://undrift.anik8.me`), **Unjob.ai** (`https://unjob.ai`), **Launchday.ai** (`https://thelaunchday.ai`). Undrift remains the featured current quest; its button goes directly to the supplied live site. More project details and entries will follow from Aniket.
 
 **Performance:** sections below the fold lazy-load their art; total parallax art ≤ 400 KB; no layout shift; 60 fps on a mid-range laptop.
 

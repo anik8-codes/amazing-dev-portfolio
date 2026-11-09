@@ -5,28 +5,36 @@ A snapshot of what's built, how the pieces fit, and what's still open. Scope liv
 
 ## Pages
 
-| route                         | what it is                                                        |
-| ----------------------------- | ----------------------------------------------------------------- |
-| `/`                           | READ mode home: hero canvas, then every home section (below)      |
-| `/experience/<slug>/`         | one page per job: titles held, everything done, tech used, photos |
-| `/play/`                      | PLAY mode: the 3D island of Aniket's story                        |
-| `/kit/`                       | design-system sheet (noindex)                                     |
-| `/build.json`, `/sitemap.xml` | build info for `/infra`, sitemap                                  |
+| route                         | what it is                                                          |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `/`                           | READ mode home: hero canvas, then every home section (below)        |
+| `/experience/<slug>/`         | one page per job: titles held, everything done, tech used, photos   |
+| `/play/`                      | PLAY mode: an open 3D island, one place per chapter of the story    |
+| `/projects/<slug>/`           | one page per project: facts, numbers, how it works, work done       |
+| `/llms.txt`, `/index.md`      | the site as Markdown for AI assistants (GEO); also `/llms-full.txt` |
+| `/kit/`                       | design-system sheet (noindex)                                       |
+| `/build.json`, `/sitemap.xml` | build info for `/infra`, sitemap                                    |
 
 ## Home, top to bottom
 
+0. **Swarm intro** (`src/components/layout/SwarmLoader.tsx`, engine `src/lib/swarm-build.ts`): once per session on `/`, the hero starts blank and named cursor agents drag out boxes and rebuild it block by block (our own take on Joel Califa's Swarm). Visitors sent by an AI assistant (ChatGPT, Perplexity, …) get a hello. Click/Esc skips; off under reduced motion and without JS.
 1. **Hero** (`src/components/hero/`, content in `src/config/hero.ts`, `hud.ts`, `socials.ts`): HUD, pixel wordmark, name and headline, A/B buttons, intro + reels, figurines, cartridges, social app icons, typeable `whoami.sh` terminal (`src/lib/terminal.ts`).
 2. **Experience** (`src/components/experience/`, `src/config/experience.ts`): one pinned chapter per company, newest first: company heading + website/LinkedIn, the title ladder (promotions), what I did, tech chips with real logos, and the place it happened as a duotone illustration on layered hills. The runner moves along the road at the bottom as you scroll.
-3. **Projects** (`src/components/sections/QuestLog.tsx`, `src/config/quests.ts`): current quest + project cards.
+3. **Projects** (`src/components/sections/QuestLog.tsx`, `src/config/quests.ts`): compact cards (screenshot, name, one line, year · stack) linking to `/projects/<slug>/`.
 4. **Player 1** (`src/components/github/`): flip card (GitHub picture → portrait) and the GitHub contribution graph with streaks, drawn at build time.
 5. **Skills** (`src/components/skills/`, `src/config/skills.ts`): 106 skills in 8 categories, each a logo tile that opens a card with a take, GitHub numbers and where it was used at work.
-6. Broadcast, logs, high scores, CONTINUE?, footer.
+6. **FAQ** (`src/config/faq.ts`, answers built from the other configs, plus FAQPage JSON-LD), CONTINUE?, footer (with the hanging anik8 and "for agents" links).
 
 ## PLAY mode (`/play/`)
 
-- `src/components/play/PlayGame.tsx`: overlay: loading, read-mode exit, timeline, chapter + "found" cards (cookie jar included), scroll/swipe-to-walk, chapter list.
-- `World.tsx` lays everything out from `src/config/lore.ts` (chapters + places); `Player.tsx` moves the 3D figure (`models/Avatar.tsx`) with eased velocity, smooth turning and colliders; `Nature.tsx` grows the island; `models/` holds every prop.
-- Add a life detail: one line in `places` in `src/config/lore.ts` (model, position, optional story). New prop shapes go in `models/life.tsx` + `models/registry.tsx`.
+Our own engine in `src/lib/world/` (plain three.js on WebGPU with a WebGL 2 fallback, Rapier physics), techniques studied from Bruno Simon's folio-2025 (MIT). Models: Kenney CC0 kits in `public/play/models/`.
+
+- `look.ts`: the toon material (soft shadow band tinted violet, bounce light, fog into a sky gradient) and the sun.
+- `nature.ts`: island ground, sea with foam, endless wind-blown grass, leaf-card bushes.
+- `player.ts` + `physics.ts`: character controller (walk, run, jump, push bricks), colliders.
+- `view.ts`: long-lens follow camera, drag to pan, scroll/pinch to zoom.
+- `life.ts`: clouds, coins, villagers, birds, chapter signs, story markers.
+- Layout lives in `src/config/world.ts`; the stories in `places` (`src/config/lore.ts`).
 
 ## Data scripts (run, then commit the output)
 
@@ -42,8 +50,13 @@ A snapshot of what's built, how the pieces fit, and what's still open. Scope liv
 
 `pnpm check` · `pnpm lint` · `pnpm test` (unit, pure logic in `src/lib/`) · `pnpm knip` · `pnpm build` · `pnpm test:e2e` (Playwright + axe on `/`, `/kit`, an experience page and `/play`). CI runs the same plus gitleaks, Lighthouse budgets and a link check.
 
+## Site-wide
+
+- **Swarm intro** on the first page of a visit, **music** (an original Web Audio chiptune, off by default), **SEO/GEO**: per-page canonical + Open Graph, a generated share card, Person/WebSite JSON-LD, `robots.txt`, `llms.txt`.
+
 ## Open
 
 - **Content:** LinkedIn + Instagram posts and photos per chapter (needs the data exports), which hackathons were wins or mentoring, job photos, the draft takes in `skills.ts`, reels and the intro video.
-- **Pages linked but not built:** quests, blog, lore, learn, book, now, infra.
+- **Pages linked but not built:** blog, lore, learn, now, infra.
+- **PLAY:** Aniket's own character (KayKit CC0 base, recoloured) and in-game quests (ride the bike, coins, bricks, every chapter).
 - **Infra:** Cloudflare account + domain for the deploy (T04/T05); decision 12 (JS budget).
