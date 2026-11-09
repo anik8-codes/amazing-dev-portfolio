@@ -1,3 +1,4 @@
+import { site } from './site';
 import type { Look } from '@/assets/sprites';
 
 export interface Mode {
@@ -17,7 +18,7 @@ export const modes: readonly Mode[] = [
   { id: 'creator', name: 'creator', target: '/#reels' },
   { id: 'traveler', name: 'traveler', target: '/lore' },
   { id: 'hackathon', name: 'hackathon', target: '/quests' },
-  { id: 'formal', name: 'formal', target: '/book' },
+  { id: 'formal', name: 'formal', target: site.booking },
   { id: 'gamer', name: 'gamer', target: '/#main' },
   { id: 'builder', name: 'builder', target: '/#projects' },
   { id: 'chill', name: 'chill', target: '/#read' },

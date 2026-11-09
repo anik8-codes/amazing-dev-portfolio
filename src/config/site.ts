@@ -4,5 +4,8 @@ export const site = {
   author: 'Aniket Singh',
   headline: 'devops, backend & ai engineer',
   url: 'https://anik8.codes',
-  description: 'Aniket Singh (anik8): devops, backend & ai engineer.',
+  /** 30-minute call (Cal.com), used by every "book a call". */
+  booking: 'https://cal.com/anik8/30min',
+  description:
+    'Aniket Singh (anik8) is a devops, backend & ai engineer from Indore, India, and CTO at MaxCode IT Solutions. Portfolio, experience, projects and resume.',
 } as const;

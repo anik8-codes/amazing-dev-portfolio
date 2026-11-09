@@ -31,6 +31,8 @@ export function RunnerCursor() {
   const on = useSyncExternalStore(subscribeCompanion, companionOn, () => true);
 
   useEffect(() => {
+    // The office monitor is an embedded desktop; it should not start a second cursor loop.
+    if (window.self !== window.top) return;
     const fine = window.matchMedia('(pointer: fine)');
     const still = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setEnabled(fine.matches && !still.matches);

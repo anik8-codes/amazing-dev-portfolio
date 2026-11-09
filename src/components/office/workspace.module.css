@@ -1,0 +1,113 @@
+.section {
+  position: relative;
+  z-index: 55;
+  background: var(--color-white);
+  scroll-margin-top: 80px;
+}
+.hint {
+  display: none;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+.sticky {
+  position: relative;
+  height: 100svh;
+  min-height: 480px;
+  overflow: clip;
+}
+.frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-white);
+}
+.office {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+}
+
+/* Keep the site-wide decorative follower outside the interactive desk. */
+:global(body):has(.section:hover) > :global([data-state]) {
+  visibility: hidden;
+}
+.toolbar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  left: 16px;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid var(--color-ink);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+.footer {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 10px 12px;
+  border: 2px solid var(--color-haze);
+  border-radius: 12px;
+  background: var(--color-white);
+  font-size: 12px;
+  color: var(--color-muted);
+}
+@media (min-width: 768px) {
+  .toolbar {
+    right: auto;
+    max-width: calc(100% - 32px);
+  }
+}
+/* Unsupported browsers and reduced motion get a normal, full-width static section. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hint {
+      display: block;
+    }
+    .track {
+      height: 240svh;
+      view-timeline: --workspace block;
+    }
+    .sticky {
+      position: sticky;
+      top: 0;
+    }
+    .frame {
+      border: 2px solid var(--color-ink);
+      border-radius: 24px;
+      animation: expand linear both;
+      animation-timeline: --workspace;
+      animation-range: contain 0% contain 30%;
+    }
+    .track:focus-within .frame {
+      animation: none;
+      border-color: transparent;
+      border-radius: 0;
+      transform: none;
+    }
+  }
+}
+@keyframes expand {
+  from {
+    transform: scale(0.86);
+    border-radius: 24px;
+    border-color: var(--color-ink);
+  }
+  to {
+    transform: scale(1);
+    border-radius: 0;
+    border-color: transparent;
+  }
+}

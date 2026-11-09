@@ -1,4 +1,6 @@
 import type { StaticImageData } from 'next/image';
+import gandhi1 from '@/assets/scenes/gandhi-hall-1.png';
+import gandhi2 from '@/assets/scenes/gandhi-hall-2.png';
 import gate1 from '@/assets/scenes/india-gate-1.png';
 import gate2 from '@/assets/scenes/india-gate-2.png';
 import rajwada1 from '@/assets/scenes/rajwada-1.png';
@@ -46,7 +48,6 @@ export interface Job {
   look: Look;
   /** Photos from that time. TODO(content): Aniket to send real photos (4 per job is ideal). */
   photos: Photo[];
-  environment?: { href: string; label: string; caption: string };
   /**
    * Where the work happened, as a duotone illustration: silhouette + shading masks from
    * `pnpm scenes`, painted in theme colours (credits: media/scenes/CREDITS.md).
@@ -214,10 +215,10 @@ export const jobs: readonly Job[] = [
     stack: ['python', 'flask', 'fastapi', 'vector dbs', 'sql', 'power bi', 'mongodb', 'postgresql'],
     look: 'work',
     photos: placeholders('botmartz'),
-    environment: {
-      href: '/office/',
-      label: 'enter virtual environment',
-      caption: 'remote · step inside my home workspace',
+    scene: {
+      tones: [gandhi1, gandhi2],
+      label: 'indore · gandhi hall',
+      alt: 'illustration of Gandhi Hall, Indore',
     },
   },
 ];

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ResumeViewer } from '@/components/resume/ResumeViewer';
 import { office } from '@/config/office';
+import { resume } from '@/config/resume';
 import styles from './office.module.css';
 
 /** Local monitor desktop; resume rendering reuses the old portfolio's PDF iframe approach. */
@@ -13,7 +14,7 @@ export function OfficeDesktop() {
     <section className={styles.desktop} aria-label={d.title}>
       <header className="flex items-center justify-between gap-4 border-b-2 border-ink bg-white px-6 py-4">
         <span className="font-display text-pixel-16">{d.title}</span>
-        <a href="/resume/" target="_top" className="font-semibold underline underline-offset-4">
+        <a href={resume.href} target="_top" className="font-semibold underline underline-offset-4">
           {d.full}
         </a>
       </header>

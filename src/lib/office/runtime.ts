@@ -12,6 +12,7 @@ import { office } from '@/config/office';
 export type OfficeView = 'desk' | 'monitor' | 'room';
 export interface OfficeHandle {
   setView: (view: OfficeView) => void;
+  setActive: (active: boolean) => void;
   dispose: () => void;
 }
 
@@ -42,6 +43,8 @@ export async function createOffice(
   controls.target.set(0, 500, 0);
   controls.enableDamping = false;
   controls.enablePan = false;
+  // Wheel and vertical touch gestures continue through the landing page.
+  controls.enableZoom = false;
   controls.minDistance = 1800;
   controls.maxDistance = 45000;
   controls.minPolarAngle = Math.PI / 5;
@@ -55,18 +58,19 @@ export async function createOffice(
   let ready = false;
   let frame = 0;
   let transitioning = false;
+  let active = true;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const targetPos = new THREE.Vector3();
   const targetLook = new THREE.Vector3();
   let previousTime = 0;
 
   function render() {
-    if (disposed || document.hidden) return;
+    if (disposed || document.hidden || !active) return;
     renderer.render(scene, camera);
     css.render(cssScene, camera);
   }
   function animate(time: number) {
-    if (disposed || document.hidden) return;
+    if (disposed || document.hidden || !active) return;
     const delta = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0.016;
     previousTime = time;
     const alpha = reduced.matches ? 1 : 1 - Math.exp(-8 * delta);
@@ -87,6 +91,9 @@ export async function createOffice(
   }
   function setView(view: OfficeView) {
     cancelAnimationFrame(frame);
+    transitioning = false;
+    controls.enabled = true;
+    previousTime = 0;
     // Henry's original positions, with the original responsive monitor adjustment.
     if (view === 'monitor') {
       targetPos.set(
@@ -129,11 +136,16 @@ export async function createOffice(
     render();
   }
   function visibility() {
-    if (document.hidden) cancelAnimationFrame(frame);
+    if (document.hidden || !active) cancelAnimationFrame(frame);
     else if (transitioning) {
       previousTime = 0;
       frame = requestAnimationFrame(animate);
     } else render();
+  }
+  function setActive(next: boolean) {
+    if (disposed || active === next) return;
+    active = next;
+    visibility();
   }
   controls.addEventListener('change', render);
   document.addEventListener('visibilitychange', visibility);
@@ -243,9 +255,10 @@ export async function createOffice(
     // Orbit inputs go to the host; actual monitor inputs remain within its iframe.
     controls.disconnect();
     controls.connect(host);
+    host.style.touchAction = 'pan-y pinch-zoom';
     ready = true;
     render();
-    return { setView, dispose };
+    return { setView, setActive, dispose };
   } catch (error) {
     dispose();
     throw error;

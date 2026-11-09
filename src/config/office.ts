@@ -1,14 +1,16 @@
 /** Henry Heffernan's original MIT-licensed room, adapted to a local resume desktop. */
 export const office = {
-  title: 'my virtual workspace',
-  description: 'step inside my work-from-home setup. use the computer to read my resume.',
-  enter: 'enter virtual environment',
-  home: { label: 'back to Botmartz', href: '/#exp-botmartz' },
+  id: 'workspace',
+  href: '/#workspace',
+  title: 'my setup',
+  description: 'a virtual workspace. look around, then open my resume on the computer.',
+  scrollHint: 'keep scrolling to step inside ↓',
+  continue: { href: '#projects', label: 'continue to projects ↓' },
   loading: 'loading the workspace',
   ready: 'workspace ready',
   retry: 'try again',
   error: 'the 3D workspace could not load. you can still read or download my resume.',
-  help: 'drag to look around · scroll or pinch to zoom · use the computer to open my resume',
+  help: 'drag to look around · use computer for my resume · scroll outside the monitor to continue',
   views: [
     { id: 'desk', label: 'desk view' },
     { id: 'monitor', label: 'use computer' },

@@ -1,11 +1,9 @@
+import { site } from './site';
 /** Top bar (requirements §4a → Top bar = game HUD). */
 export const hud = {
   nav: [
-    { label: 'quests', href: '/quests' },
-    { label: 'blog', href: '/blog' },
-    { label: 'lore', href: '/lore' },
-    { label: 'learn', href: '/learn' },
+    { label: 'projects', href: '/#projects' },
     { label: 'resume', href: '/resume/' },
   ],
-  book: { label: 'book a call', href: '/book' },
+  book: { label: 'book a call', href: site.booking },
 } as const;

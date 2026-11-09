@@ -6,7 +6,6 @@ import { CompanyLinks } from './CompanyLinks';
 import { Hills } from './Hills';
 import { RoleLadder } from './RoleLadder';
 import { SceneArt } from './SceneArt';
-import { OfficePortal } from './OfficePortal';
 import { TechChips } from './TechChips';
 import styles from './experience.module.css';
 
@@ -55,9 +54,7 @@ export function Chapter({ job, index }: { job: Job; index: number }) {
       </div>
 
       <div className={styles.visual}>
-        {job.environment ? (
-          <OfficePortal job={job} />
-        ) : job.scene ? (
+        {job.scene ? (
           <SceneArt tones={job.scene.tones} alt={job.scene.alt} className={styles.scene} />
         ) : (
           <Sprite

@@ -161,6 +161,17 @@ await scene({
   isBackground: paleNeutral(200),
   out: 'rajwada.png',
 });
+/** Clear blue sky: blue clearly above red, and bright enough. */
+const blueSky = (r, g, b) => b > 150 && b - r > 40;
+
+await scene({
+  file: 'gandhi-hall.jpg',
+  crop: { left: 0, top: 0, width: 1600, height: 2133 },
+  edges: ['top', 'right'],
+  isBackground: blueSky,
+  maxStep: 40,
+  out: 'gandhi-hall.png',
+});
 await scene({
   file: 'desk-henry.png',
   crop: { left: 60, top: 40, width: 1180, height: 790 },

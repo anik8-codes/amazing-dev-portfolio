@@ -4,6 +4,8 @@
  */
 export const resume = {
   title: 'resume',
+  href: '/resume/',
+  view: 'view resume',
   description: "Aniket Singh's resume. read it here, open the PDF or save a copy.",
   pdf: '/resume/aniket-singh.pdf',
   fileName: 'Aniket-Singh-Resume.pdf',
@@ -13,5 +15,5 @@ export const resume = {
   download: 'download resume',
   fallback: 'if your browser does not display PDFs, open or download the file above.',
   back: { label: 'back home', href: '/' },
-  office: { label: 'enter virtual workspace', href: '/office/' },
+  office: { label: 'my virtual setup', href: '/#workspace' },
 } as const;
