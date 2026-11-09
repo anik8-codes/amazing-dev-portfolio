@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* The loader's global root selector belongs here, outside CSS-module purity rules. */
+html[data-swarm] #main {
+  visibility: hidden;
+}
+
 /* Brand tokens (docs/brand.md). The default palette is cleared so only these exist. */
 @theme {
   --color-*: initial;
@@ -12,6 +17,10 @@
   --color-haze: #e7e3ef;
   --color-muted: #6b6480;
   --color-panel: #f6f4fa;
+  /* Native-style decorative traffic lights for the hero's Mac video windows. */
+  --color-window-close: #ff5f57;
+  --color-window-minimize: #febc2e;
+  --color-window-maximize: #28c840;
   --color-sparkle-1: #e4dff0;
   --color-sparkle-2: #d9d1ea;
   --color-sparkle-3: #f3c6c6;
@@ -41,10 +50,17 @@
   --animate-pant: pant 0.5s steps(2) infinite;
   --animate-sweat: sweat 0.9s steps(4) infinite;
   --animate-zzz: zzz 2.4s steps(6) infinite;
+  /* Music button equaliser bars. */
+  --animate-eq: eq 0.9s steps(4) infinite alternate;
 
   @keyframes run {
     to {
       background-position-x: var(--run-distance);
+    }
+  }
+  @keyframes eq {
+    from {
+      scale: 1 0.3;
     }
   }
   @keyframes blink {

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from 'react';
 import { MoonIcon, SoundOffIcon, SoundOnIcon, SunIcon } from '@/components/ui/Icons';
+import { musicPlaying, setMusic, subscribeMusic } from '@/lib/music';
 import { setSound, soundOn, subscribeSound } from '@/lib/sfx';
 import { getTheme, setTheme, subscribeTheme } from '@/lib/theme';
 
@@ -22,6 +23,32 @@ export function SoundToggle() {
       className={btn}
     >
       {on ? <SoundOnIcon /> : <SoundOffIcon />}
+    </button>
+  );
+}
+
+/** Background music (an original chiptune loop). The bars dance while it plays. */
+export function MusicToggle() {
+  const on = useSyncExternalStore(subscribeMusic, musicPlaying, () => false);
+  return (
+    <button
+      type="button"
+      data-sfx="none"
+      aria-pressed={on}
+      aria-label="music"
+      title={on ? 'pause music' : 'play music'}
+      onClick={() => setMusic(!on)}
+      className={btn}
+    >
+      <span aria-hidden className="flex h-4 items-end gap-[3px]">
+        {[0.6, 1, 0.75, 0.9].map((h, i) => (
+          <span
+            key={i}
+            className={`w-[3px] origin-bottom rounded-full bg-current ${on ? 'animate-eq' : ''}`}
+            style={{ height: `${h * 100}%`, animationDelay: `${i * -0.23}s` }}
+          />
+        ))}
+      </span>
     </button>
   );
 }

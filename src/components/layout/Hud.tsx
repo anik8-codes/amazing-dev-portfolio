@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import { Wordmark } from '@/components/pixel/Wordmark';
 import { hud } from '@/config/hud';
-import { SoundToggle, ThemeToggle } from './HudToggles';
+import { MusicToggle, SoundToggle, ThemeToggle } from './HudToggles';
 import { IstClock } from './IstClock';
 
 /** Site top bar: wordmark + nav on the left; clock, sound, theme and "book a call" on the right. */
 export function Hud() {
   return (
-    <header className="sticky top-0 z-50 border-b border-haze bg-white/85 backdrop-blur-md">
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 px-4 py-3 xl:px-8">
+    <header className="sticky top-0 z-50 border-b border-haze bg-white">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 xl:px-8">
         <Link href="/" aria-label="anik8 home" className="shrink-0">
-          <Wordmark cell={4} />
+          <Wordmark cell={4} className="h-auto w-[118.5px] sm:w-[158px]" />
         </Link>
         <nav
           aria-label="main"
@@ -31,6 +31,7 @@ export function Hud() {
           <span className="mr-2 hidden lg:inline">
             <IstClock />
           </span>
+          <MusicToggle />
           <SoundToggle />
           <ThemeToggle />
           <Link

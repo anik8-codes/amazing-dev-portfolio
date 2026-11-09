@@ -4,12 +4,14 @@ import { RunCycle } from '@/components/pixel/RunCycle';
 import { hud } from '@/config/hud';
 import { site } from '@/config/site';
 import { socials } from '@/config/socials';
+import { HangingBuddy } from './HangingBuddy';
 import { RunnerToggle } from './RunnerToggle';
 
 /** Site footer: socials, links, credits, standing on pixel ground tiles with the runner at rest. */
 export function Footer() {
   return (
-    <footer className="mt-auto pb-8">
+    <footer className="relative mt-auto pb-8">
+      <HangingBuddy />
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-14 xl:px-8">
         <ul aria-label="find me on" className="flex flex-wrap gap-5">
           {socials.map((s) => (
@@ -27,6 +29,15 @@ export function Footer() {
               </Link>
             ))}
           </nav>
+          <p className="flex shrink-0 gap-3 whitespace-nowrap">
+            <span>for agents:</span>
+            <a href="/llms.txt" className="underline underline-offset-4 hover:text-ink">
+              llms.txt
+            </a>
+            <a href="/index.md" className="underline underline-offset-4 hover:text-ink">
+              index.md
+            </a>
+          </p>
           <p>
             © 2026 {site.author} · code MIT · art & words all rights reserved · built with next.js
             on cloudflare
