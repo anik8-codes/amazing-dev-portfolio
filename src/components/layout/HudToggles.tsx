@@ -18,6 +18,8 @@ export function SoundToggle() {
       data-sfx="none"
       aria-pressed={on}
       aria-label="sound"
+      data-umami-event="sound_toggle"
+      data-umami-event-to={on ? 'off' : 'on'}
       title={on ? 'sound on' : 'sound off'}
       onClick={() => setSound(!on)}
       className={btn}

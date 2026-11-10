@@ -37,6 +37,7 @@ export function Hud() {
           <ThemeToggle />
           <Link
             href={hud.book.href}
+            data-umami-event="book_open"
             className="ml-2 rounded-full bg-red px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
           >
             {hud.book.label}

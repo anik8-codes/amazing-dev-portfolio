@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { pageMeta } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { breadcrumbs, pageMeta } from '@/lib/seo';
 import { site } from '@/config/site';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
         title: `${job.roles[0]!.title} at ${job.company} · Aniket Singh (anik8)`,
         description: `${site.author} at ${job.company}: ${job.summary}`,
         path: `/experience/${job.slug}/`,
+        markdown: `/experience/${job.slug}/index.md`,
       })
     : {};
 }
@@ -42,6 +44,12 @@ export default async function ExperiencePage({ params }: Params) {
 
   return (
     <article className="mx-auto flex max-w-5xl flex-col gap-14 px-4 py-12 xl:py-16">
+      <JsonLd
+        data={breadcrumbs([
+          { name: 'experience', path: '/#experience' },
+          { name: job.company, path: `/experience/${job.slug}/` },
+        ])}
+      />
       <Link href="/#experience" prefetch={false} className="w-fit text-muted hover:text-ink">
         ← back to the map
       </Link>

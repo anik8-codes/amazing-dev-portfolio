@@ -19,7 +19,7 @@ export function ContinueScreen() {
       <Countdown />
       <p className="mx-auto mt-8 max-w-md text-lg text-muted">{c.line}</p>
       <div className="mt-10">
-        <ControllerButton letter="A" href={c.cta.href} sfx="start">
+        <ControllerButton letter="A" href={c.cta.href} sfx="start" event="book_open">
           {c.cta.label}
         </ControllerButton>
       </div>

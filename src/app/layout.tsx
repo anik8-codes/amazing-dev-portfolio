@@ -3,6 +3,8 @@ import { Footer } from '@/components/layout/Footer';
 import { Hud } from '@/components/layout/Hud';
 import { RunnerCursorLoader } from '@/components/layout/RunnerCursorLoader';
 import { SoundLayer } from '@/components/layout/SoundLayer';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { umamiScript } from '@/lib/analytics';
 import { jsonLd } from '@/lib/seo';
 import { swarmScript } from '@/lib/swarm';
 import { themeScript } from '@/lib/theme';
@@ -30,12 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: swarmScript }} />
-        {/* the whole site as Markdown, for AI assistants (GEO) */}
-        <link rel="alternate" type="text/markdown" href="/index.md" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <JsonLd data={jsonLd} />
+        <script dangerouslySetInnerHTML={{ __html: umamiScript }} />
       </head>
       <body className="flex min-h-dvh flex-col">
         <a

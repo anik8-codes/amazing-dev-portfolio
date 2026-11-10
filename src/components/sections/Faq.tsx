@@ -1,3 +1,4 @@
+import { JsonLd } from '@/components/seo/JsonLd';
 import { faq } from '@/config/faq';
 import { Section } from './Section';
 
@@ -15,10 +16,7 @@ const schema = {
 export function Faq() {
   return (
     <Section defer id="faq" stage="1-5" title="faq" kicker="the quick answers.">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
+      <JsonLd data={schema} />
       <div className="max-w-3xl divide-y divide-haze border-y border-haze">
         {faq.map((f, i) => (
           <details key={f.q} open={i === 0} className="group py-4">

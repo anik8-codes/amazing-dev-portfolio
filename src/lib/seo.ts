@@ -3,26 +3,30 @@ import { jobs } from '@/config/experience';
 import { site } from '@/config/site';
 import { socials } from '@/config/socials';
 
-/** The share card from src/app/opengraph-image.tsx (static export writes it without an extension). */
+/** The site-wide share card from src/app/opengraph-image.tsx. */
 const OG_IMAGE = '/opengraph-image';
 
 /**
- * Per-page metadata: title, description, canonical URL and matching Open Graph fields.
- * (Next replaces a parent's `openGraph`/`alternates` wholesale, so every page sets its own.)
+ * Per-page metadata: title, description, canonical URL, Markdown twin and Open Graph fields.
+ * (Next replaces a parent's `openGraph`/`alternates` wholesale, so every page sets its own.
+ * The share image comes from the nearest `opengraph-image.tsx`, which overrides config.)
  */
 export function pageMeta({
   title,
   description,
   path,
+  markdown = '/index.md',
 }: {
   title: string;
   description: string;
   path: string;
+  /** Markdown twin for AI assistants (GEO); defaults to the whole-site file. */
+  markdown?: string;
 }): Metadata {
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: path, types: { 'text/markdown': markdown } },
     openGraph: {
       type: 'website',
       siteName: site.name,
@@ -30,11 +34,34 @@ export function pageMeta({
       url: path,
       title,
       description,
-      images: [OG_IMAGE],
     },
-    twitter: { card: 'summary_large_image', title, description, images: [OG_IMAGE] },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
+
+/** schema.org BreadcrumbList from home down to the current page. */
+export const breadcrumbs = (trail: { name: string; path: string }[]) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [{ name: 'home', path: '/' }, ...trail].map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name,
+    item: `${site.url}${c.path}`,
+  })),
+});
+
+/** A project page as schema.org CreativeWork, credited to the site's Person. */
+export const projectLd = (q: { title: string; pitch: string; slug: string; href?: string }) => ({
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: q.title,
+  description: q.pitch,
+  url: `${site.url}/projects/${q.slug}/`,
+  image: `${site.url}/projects/${q.slug}/opengraph-image`,
+  ...(q.href && { sameAs: q.href }),
+  creator: { '@id': `${site.url}/#person` },
+});
 
 const now = jobs[0]!;
 
