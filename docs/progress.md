@@ -54,6 +54,7 @@ Our own engine in `src/lib/world/` (plain three.js on WebGPU with a WebGL 2 fall
 
 - **Swarm intro** on the first home visit, **music** (an original Web Audio chiptune, off by default), **SEO/GEO**: per-page canonical + Open Graph, a generated share card, Person/WebSite JSON-LD, `robots.txt`, `llms.txt`.
 - **Loading:** sprites and pre-optimized screenshots use native images with reserved dimensions. The hero poster is preloaded; route prefetching is disabled for the main navigation, game button, experience links and project cards. Cursor code loads on the first mouse movement; footer physics load only when visible. Only the selected hero sprites' URLs and dimensions reach its client selector.
+- **Below-fold rendering:** projects, GitHub, skills, FAQ, contact and footer can skip layout while offscreen. Direct hash navigation renders their real heights before scrolling, and skips the decorative intro. Browser smoke tests cover the lower-section anchors on desktop and mobile.
 
 ## Open
 

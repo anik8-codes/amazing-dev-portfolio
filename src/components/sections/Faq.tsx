@@ -14,7 +14,7 @@ const schema = {
 /** FAQ: plain answers for people and AI assistants (native <details>, plus FAQPage JSON-LD). */
 export function Faq() {
   return (
-    <Section id="faq" stage="1-5" title="faq" kicker="the quick answers.">
+    <Section defer id="faq" stage="1-5" title="faq" kicker="the quick answers.">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}

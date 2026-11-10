@@ -22,7 +22,7 @@ const day = (iso: string) =>
 export function GithubSection() {
   const s = calendarStats(weeks);
   return (
-    <Section id="player" stage="1-3" title="player 1" kicker="the human behind the commits.">
+    <Section defer id="player" stage="1-3" title="player 1" kicker="the human behind the commits.">
       <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-start">
         <PlayerCard
           login={profile.login}

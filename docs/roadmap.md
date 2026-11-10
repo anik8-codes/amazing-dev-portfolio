@@ -34,6 +34,8 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
 
   > GitHub follow-up (10 Nov): run `42713469875` passed every non-performance check and the JS/LCP budgets, but failed TBT on the hosted runner. Its browser was an unversioned Chromium snapshot (159), while local audits used stable Chrome (156). The browser channel is now explicitly stable. The same five pages and three runs per page execute as an independent matrix with separate report artifacts, shortening feedback without changing any assertions.
 
+  > production verified (10 Nov): run `42715583651` passed every gate and deployed `9ff2e85`; both apex and www served its matching `/build.json` over HTTPS. Home's three CI scores were 97/96/95, with LCP ≤ 1.91 s, TBT ≤ 184 ms and 160,318 script bytes. A cold release-PR run exposed a remaining homepage TBT fluctuation. Ordinary lower sections now defer offscreen layout; direct hash navigation disables that deferral to keep anchor positions reliable. The intro also skips deep links. A 10× CPU local audit passes (97, LCP 1.87 s, TBT 100 ms, CLS 0); 34 unit tests and 18 desktop/mobile smoke/deep-link tests pass. Reconfirm this stabilization in GitHub before closing T03.
+
 - [ ] **T04 Infra as code**
   - Read: requirements §3 (Infra), §13.
   - Build: OpenTofu in `infra/` for Cloudflare: Pages project, R2 bucket (media), D1 database, KV namespace, DNS records for the chosen domain; remote state; `tofu plan` on PR, `apply` on `main` from CI; `.gitignore` covers plans and state.

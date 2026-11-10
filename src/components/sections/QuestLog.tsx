@@ -6,6 +6,7 @@ import { Section } from './Section';
 export function QuestLog() {
   return (
     <Section
+      defer
       id="projects"
       stage="1-2"
       title="projects"

@@ -10,7 +10,10 @@ import { RunnerToggle } from './RunnerToggle';
 /** Site footer: socials, links, credits, standing on pixel ground tiles with the runner at rest. */
 export function Footer() {
   return (
-    <footer className="relative mt-auto pb-8">
+    <footer
+      className="defer-render relative mt-auto pb-8"
+      style={{ '--deferred-height': '420px' } as React.CSSProperties}
+    >
       <HangingBuddy />
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-14 xl:px-8">
         <ul aria-label="find me on" className="flex flex-wrap gap-5">

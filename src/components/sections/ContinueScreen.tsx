@@ -8,7 +8,11 @@ import { Countdown } from './Countdown';
  */
 export function ContinueScreen() {
   return (
-    <section aria-labelledby="continue-title" className="px-4 py-24 text-center">
+    <section
+      aria-labelledby="continue-title"
+      className="defer-render px-4 py-24 text-center"
+      style={{ '--deferred-height': '600px' } as React.CSSProperties}
+    >
       <h2 id="continue-title" className="font-display text-pixel-24 uppercase sm:text-pixel-32">
         {c.title}
       </h2>

@@ -15,13 +15,13 @@ describe('sourceFrom', () => {
 });
 
 describe('swarm intro eligibility', () => {
-  function visit(pathname: string, reduced = false, visited = false) {
+  function visit(pathname: string, reduced = false, visited = false, hash = '') {
     const dataset: Record<string, string> = {};
     const storage = new Map(visited ? [['swarm', '1']] : []);
     const timers: { callback: () => void; delay: number }[] = [];
     runInNewContext(swarmScript, {
       document: { documentElement: { dataset }, referrer: '' },
-      location: { pathname, search: '' },
+      location: { pathname, search: '', hash },
       sessionStorage: {
         getItem: (key: string) => storage.get(key),
         setItem: (key: string, value: string) => storage.set(key, value),
@@ -53,5 +53,11 @@ describe('swarm intro eligibility', () => {
   it('skips the intro for reduced motion and repeat visits', () => {
     expect(visit('/', true).dataset.swarm).toBeUndefined();
     expect(visit('/', false, true).dataset.swarm).toBeUndefined();
+  });
+
+  it('does not play the hero decoration over a directly linked lower section', () => {
+    const page = visit('/', false, false, '#projects');
+    expect(page.dataset.swarm).toBeUndefined();
+    expect(page.storage.has('swarm')).toBe(false);
   });
 });

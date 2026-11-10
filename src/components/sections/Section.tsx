@@ -8,16 +8,18 @@ interface Props {
   /** One line under the title. */
   kicker?: string;
   className?: string;
+  /** Let the browser skip layout/paint until this ordinary section approaches the viewport. */
+  defer?: boolean;
   children: React.ReactNode;
 }
 
 /** Shell for every home section: "WORLD 1-2" label, pixel h2, kicker, content. */
-export function Section({ id, stage, title, kicker, className, children }: Props) {
+export function Section({ id, stage, title, kicker, className, defer, children }: Props) {
   return (
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className={`${styles.world} px-4 py-20 xl:px-8 xl:py-28 ${className ?? ''}`}
+      className={`${styles.world} ${defer ? 'defer-render' : ''} px-4 py-20 xl:px-8 xl:py-28 ${className ?? ''}`}
     >
       <div aria-hidden className={styles.scenery}>
         <div className={styles.sky} />

@@ -22,6 +22,7 @@ export function SkillGrid() {
   );
   return (
     <Section
+      defer
       id="skills"
       stage="1-4"
       title="skills"

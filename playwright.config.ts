@@ -6,7 +6,10 @@ export default defineConfig({
   testMatch: '*.e2e.ts', // not *.spec.ts, so Vitest never picks these up
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? 'github' : 'list',
-  use: { baseURL: 'http://localhost:4173' },
+  use: {
+    baseURL: 'http://localhost:4173',
+    launchOptions: { args: ['--enable-unsafe-swiftshader'] },
+  },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },

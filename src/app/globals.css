@@ -1,5 +1,15 @@
 @import 'tailwindcss';
 
+/* Skip below-fold layout during an ordinary home load. Direct section links need real
+   heights before anchor scrolling, rather than estimated heights from skipped sections. */
+.defer-render {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto var(--deferred-height, 1000px);
+}
+html:has(:target) .defer-render {
+  content-visibility: visible;
+}
+
 /* Brand tokens (docs/brand.md). The default palette is cleared so only these exist. */
 @theme {
   --color-*: initial;
