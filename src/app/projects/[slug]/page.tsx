@@ -7,7 +7,8 @@ import { TechChips } from '@/components/experience/TechChips';
 import { jobs, span } from '@/config/experience';
 import { quests } from '@/config/quests';
 import { site } from '@/config/site';
-import { pageMeta } from '@/lib/seo';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { breadcrumbs, pageMeta, projectLd } from '@/lib/seo';
 
 interface Params {
   params: Promise<{ slug: string }>;
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
         title: `${q.title} · project by Aniket Singh (anik8)`,
         description: `${q.title}: ${q.pitch}`,
         path: `/projects/${q.slug}/`,
+        markdown: `/projects/${q.slug}/index.md`,
       })
     : {};
 }
@@ -60,6 +62,13 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <article className="mx-auto flex max-w-4xl flex-col gap-12 px-4 py-12 xl:py-16">
+      <JsonLd data={projectLd(q)} />
+      <JsonLd
+        data={breadcrumbs([
+          { name: 'projects', path: '/#projects' },
+          { name: q.title, path: `/projects/${q.slug}/` },
+        ])}
+      />
       <Link href="/#projects" prefetch={false} className="w-fit text-muted hover:text-ink">
         ← all projects
       </Link>

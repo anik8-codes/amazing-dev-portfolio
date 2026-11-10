@@ -1,5 +1,9 @@
-# Cloudflare Pages headers. The static export writes the share card without an extension.
+# Cloudflare Pages headers. The static export writes share cards without an extension.
 /opengraph-image
   Content-Type: image/png
+/*/opengraph-image
+  Content-Type: image/png
 /index.md
+  Content-Type: text/markdown; charset=utf-8
+/*/index.md
   Content-Type: text/markdown; charset=utf-8

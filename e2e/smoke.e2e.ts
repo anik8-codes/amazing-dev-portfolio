@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 // Add each new page here as it lands.
-const pages = ['/', '/kit', '/experience/unjob/', '/play/'];
+const pages = ['/', '/kit', '/experience/unjob/', '/projects/undrift/', '/play/'];
 
 for (const path of pages) {
   test(`${path} renders with one h1 and no axe violations`, async ({ page }, testInfo) => {
@@ -45,5 +45,21 @@ for (const id of ['projects', 'workspace', 'player', 'skills', 'faq']) {
       }
       await page.screenshot({ path: testInfo.outputPath(`${id}.png`), animations: 'disabled' });
     }
+  });
+}
+
+// SEO/GEO: valid JSON-LD and a reachable Markdown twin on every content page.
+for (const path of ['/', '/projects/undrift/', '/experience/maxcode/', '/resume/']) {
+  test(`${path} has parseable JSON-LD and a Markdown twin`, async ({ page, request }) => {
+    await page.goto(path);
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(blocks.length).toBeGreaterThan(0);
+    for (const b of blocks) expect(() => JSON.parse(b)).not.toThrow();
+    const twin = await page
+      .locator('link[rel="alternate"][type="text/markdown"]')
+      .getAttribute('href');
+    const res = await request.get(new URL(twin!).pathname);
+    expect(res.ok()).toBe(true);
+    expect(await res.text()).toMatch(/^# /);
   });
 }
