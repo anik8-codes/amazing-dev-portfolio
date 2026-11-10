@@ -24,6 +24,7 @@ export function HeroCenter() {
               letter={b.letter}
               href={b.href}
               sfx={b.letter === 'A' ? 'start' : undefined}
+              event={b.letter === 'A' ? 'press_start' : undefined}
               compact
             >
               {b.label}

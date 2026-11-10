@@ -45,3 +45,11 @@ resource "cloudflare_workers_kv_namespace" "cache" {
   account_id = var.account_id
   title      = "${var.project}-cache"
 }
+
+# Analytics (T15): Cloudflare Web Analytics, cookieless RUM + Core Web Vitals. With
+# auto_install the edge injects the beacon into every proxied page, so the build ships no tag.
+resource "cloudflare_web_analytics_site" "site" {
+  account_id   = var.account_id
+  zone_tag     = var.zone_id
+  auto_install = true
+}

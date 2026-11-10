@@ -9,6 +9,8 @@ interface Props {
   sfx?: string;
   className?: string;
   compact?: boolean;
+  /** Umami event name sent on click (requirements §8). */
+  event?: string;
 }
 
 const looks = {
@@ -17,13 +19,22 @@ const looks = {
 } as const;
 
 /** Controller-style link button: ink frame, 6 px ink shadow that collapses when pressed. */
-export function ControllerButton({ letter, href, sfx, children, className, compact }: Props) {
+export function ControllerButton({
+  letter,
+  href,
+  sfx,
+  children,
+  className,
+  compact,
+  event,
+}: Props) {
   const look = looks[letter];
   return (
     <Link
       href={href}
       prefetch={false}
       data-sfx={sfx}
+      data-umami-event={event}
       className={`inline-flex items-center border-3 border-ink ${compact ? 'gap-3 px-4 py-2 text-lg' : 'gap-4 px-6 py-3 text-2xl'} font-bold shadow-[6px_6px_0_var(--color-ink)] transition-[translate,box-shadow] duration-75 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none motion-reduce:transition-none ${look.button} ${className ?? ''}`}
     >
       <span
