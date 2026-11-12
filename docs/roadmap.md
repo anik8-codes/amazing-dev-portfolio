@@ -79,6 +79,8 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
 
   > status (10 Nov): already in place: per-page meta + canonical, Person/WebSite/FAQPage JSON-LD, `llms.txt`, `llms-full.txt`, `/index.md`, robots (AI crawlers allowed, TODO(decision-5)). Added: a Satori share card per project and experience page (`src/lib/og.tsx`), BreadcrumbList on both, CreativeWork on projects, a Markdown twin for each (`/projects/<slug>/index.md`, `/experience/<slug>/index.md`) advertised via `<link rel="alternate" type="text/markdown">`, and an e2e check that every JSON-LD block parses and every twin loads. **Open:** run Google's Rich Results test on the deployed home + a project; blog `BlogPosting` waits for T11; `anik8.me` → `anik8.codes` 301 still not in `infra/`.
 
+  > follow-up (13 Nov): LinkedIn and Meta fetched the live homepage preview. Added share cards for `/resume/` and `/play/` and browser coverage that fetches the exported PNGs. Verify both new routes on Cloudflare Pages after deployment.
+
 - [ ] **T14 Book + contact** — Read: §3 (Backend, Integrations). Build: Cal.com embed on `/book` + floating button; Hono worker contact endpoint with Turnstile + Resend. Done when: a test booking and a test message both arrive.
 - [ ] **T15 Analytics** — Read: §8. Build: Cloudflare Web Analytics + Umami with the §8 events. Done when: events show in Umami from the preview deploy.
 
