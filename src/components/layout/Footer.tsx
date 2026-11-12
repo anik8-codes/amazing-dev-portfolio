@@ -26,7 +26,7 @@ export function Footer() {
         <RunnerToggle />
         <div className="flex flex-col justify-between gap-6 text-sm text-muted md:flex-row">
           <nav aria-label="footer" className="flex flex-wrap gap-x-6 gap-y-2">
-            {[...hud.nav, { label: 'now', href: '/now' }, hud.book].map((n) => (
+            {[...hud.nav, hud.book].map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
