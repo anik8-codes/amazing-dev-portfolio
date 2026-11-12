@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import {
   Fn,
-  color,
+  cameraPosition,
   float,
   max,
   mix,
@@ -12,27 +12,25 @@ import {
   uniform,
   vec3,
   vec4,
-  viewportUV,
 } from 'three/tsl';
 
 /*
- * The world's look, in one place. Every surface uses `toon()`: flat colour, a soft shadow band
- * that tints toward violet instead of going grey, cast shadows in the same tint, a little bounce
- * light from the grass under things, and distance fog that fades into the sky gradient.
+ * Direct sunlight, cool shadows and the matching sky and fog. Terrain and vegetation share
+ * these uniforms with the scene lights used by the imported glTF materials.
  */
 
 export const palette = {
   light: new THREE.Color('#fff0e0'),
-  shadow: new THREE.Color('#7b5cff'),
-  bounce: new THREE.Color('#9ccf4a'),
-  skyTop: new THREE.Color('#9fdcff'),
-  skyEdge: new THREE.Color('#d4c6ff'),
-  water: new THREE.Color('#43b6e8'),
-  waterDeep: new THREE.Color('#2a7fd4'),
-  grass: new THREE.Color('#8dc63f'),
-  grassDark: new THREE.Color('#4f9a2b'),
-  sand: new THREE.Color('#f3d9a4'),
-  leaves: new THREE.Color('#5fb63c'),
+  shadow: new THREE.Color('#698098'),
+  bounce: new THREE.Color('#8da35d'),
+  skyTop: new THREE.Color('#559bd4'),
+  skyEdge: new THREE.Color('#bed5df'),
+  water: new THREE.Color('#407d80'),
+  waterDeep: new THREE.Color('#254f68'),
+  grass: new THREE.Color('#839755'),
+  grassDark: new THREE.Color('#4c6237'),
+  sand: new THREE.Color('#c9b395'),
+  leaves: new THREE.Color('#69894d'),
 };
 
 /** A colour as a vec3 uniform (linear RGB), so it multiplies cleanly with other vec3 nodes. */
@@ -40,22 +38,28 @@ const rgb = (c: THREE.Color) => uniform(new THREE.Vector3(c.r, c.g, c.b));
 
 /** Shared uniforms (the light direction follows the sun object in the engine). */
 export const look = {
-  lightDir: uniform(new THREE.Vector3(-0.5, 0.8, 0.35).normalize()),
+  focus: uniform(new THREE.Vector3()),
+  lightDir: uniform(new THREE.Vector3()),
   lightColor: rgb(palette.light),
   lightIntensity: uniform(1.15),
   shadowColor: rgb(palette.shadow),
-  shadowStrength: uniform(0.55),
+  shadowStrength: uniform(0.78),
   bounceColor: rgb(palette.bounce),
   fogNear: uniform(45),
   fogFar: uniform(110),
 };
 
-/** Screen-space sky: the same gradient is the background and the fog colour, so the horizon melts. */
-export const sky = mix(
-  color(palette.skyTop),
-  color(palette.skyEdge),
-  viewportUV.y.oneMinus().mul(1.2).clamp(0, 1),
-);
+const zenith = rgb(palette.skyTop);
+export const sky = rgb(palette.skyEdge);
+const sunColor = rgb(new THREE.Color('#fff6dd'));
+const day = new THREE.Vector3(-0.82, 0.85, -0.38).normalize();
+const dusk = new THREE.Vector3(-0.82, 0.11, -0.58).normalize();
+const duskSky = new THREE.Color('#465e8b');
+const duskHorizon = new THREE.Color('#db9674');
+const duskLight = new THREE.Color('#ffb579');
+const duskShadow = new THREE.Color('#566883');
+const dayDisk = new THREE.Color('#fff6dd');
+const duskDisk = new THREE.Color('#ffca83');
 
 type Vec3Node = THREE.Node<'vec3'>;
 type FloatNode = THREE.Node<'float'>;
@@ -88,6 +92,7 @@ export function toon({
 }: ToonOptions = {}): THREE.MeshLambertNodeMaterial {
   const material = new THREE.MeshLambertNodeMaterial();
   material.side = side ?? THREE.FrontSide;
+  material.fog = false; // outputNode already blends with the horizon
 
   // catch the shadow-map term as a number and apply it ourselves (tinted, not grey)
   const caught = float(1).toVar();
@@ -111,7 +116,7 @@ export function toon({
     }
 
     // core shadow: a soft band as faces turn away from the sun
-    const core = n.dot(look.lightDir).smoothstep(0.35, -0.2);
+    const core = n.dot(look.lightDir).smoothstep(-0.2, 0.65).oneMinus();
     const cast = caught.oneMinus();
     let amount = max(core, cast);
     if (shade) amount = max(amount, shade);
@@ -126,23 +131,11 @@ export function toon({
   return material;
 }
 
-/** Swap every material in a loaded model for `toon()`, keeping its colormap. */
-export function toonify(
-  root: THREE.Object3D,
-  cache = new Map<THREE.Texture | null, THREE.Material>(),
-) {
+/** Keep glTF materials so each artifact retains its normals, roughness and metalness. */
+export function enableModelShadows(root: THREE.Object3D) {
   root.traverse((o) => {
     const mesh = o as THREE.Mesh;
     if (!mesh.isMesh) return;
-    const old = mesh.material as THREE.MeshStandardMaterial;
-    const map = old.map ?? null;
-    if (map) map.colorSpace = THREE.SRGBColorSpace;
-    let m = cache.get(map);
-    if (!m) {
-      m = toon({ map, base: old.color?.clone() });
-      cache.set(map, m);
-    }
-    mesh.material = m;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
   });
@@ -150,22 +143,72 @@ export function toonify(
 
 /** Sun: a directional light whose shadow box follows the camera's focus point. */
 export function createSun(scene: THREE.Scene) {
-  const sun = new THREE.DirectionalLight('#ffffff', 1);
+  const sun = new THREE.DirectionalLight('#ffffff', 2.2);
+  const fill = new THREE.HemisphereLight('#c7dcff', '#6b533c', 1.05);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
   const s = sun.shadow.camera;
-  s.left = s.bottom = -34;
-  s.right = s.top = 34;
+  s.left = s.bottom = -29;
+  s.right = s.top = 29;
   s.near = 1;
   s.far = 120;
   sun.shadow.bias = -0.0008;
-  sun.shadow.normalBias = 0.05;
-  scene.add(sun, sun.target);
-  const offset = new THREE.Vector3().copy(look.lightDir.value).multiplyScalar(50);
+  sun.shadow.normalBias = 0.025;
+  const atmosphere = new THREE.MeshBasicNodeMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    fog: false,
+  });
+  atmosphere.colorNode = Fn(() => {
+    const ray = positionWorld.sub(cameraPosition).normalize();
+    const towardSun = ray.dot(look.lightDir);
+    const gradient = mix(sky, zenith, ray.y.max(0).pow(0.52));
+    const halo = towardSun.max(0).pow(18).mul(0.38);
+    const disk = towardSun.smoothstep(0.99945, 0.99965);
+    return mix(gradient, sunColor, halo.max(disk));
+  })();
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(175, 32, 16), atmosphere);
+  dome.renderOrder = -1;
+  dome.frustumCulled = false;
+  scene.add(sun, sun.target, fill, dome);
+  const tone = new THREE.Color();
+  let amount = 0;
+  let target = 0;
+  const updateColor = (start: THREE.Color, end: THREE.Color, out: THREE.Vector3) => {
+    tone.copy(start).lerp(end, amount);
+    out.set(tone.r, tone.g, tone.b);
+  };
+  function lightScene() {
+    look.lightDir.value.copy(day).lerp(dusk, amount).normalize();
+    updateColor(palette.light, duskLight, look.lightColor.value);
+    updateColor(palette.shadow, duskShadow, look.shadowColor.value);
+    updateColor(palette.skyTop, duskSky, zenith.value);
+    updateColor(palette.skyEdge, duskHorizon, sky.value);
+    updateColor(dayDisk, duskDisk, sunColor.value);
+    look.lightIntensity.value = 1.19 - amount * 0.12;
+    sun.color.setRGB(look.lightColor.value.x, look.lightColor.value.y, look.lightColor.value.z);
+    sun.intensity = 2.2 - amount * 0.72;
+    fill.intensity = 1.05 - amount * 0.38;
+  }
+  lightScene();
   return {
-    follow(focus: THREE.Vector3) {
-      sun.position.copy(focus).add(offset);
+    setSunset(on: boolean) {
+      target = Number(on);
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        amount = target;
+        lightScene();
+      }
+    },
+    follow(dt: number, focus: THREE.Vector3, camera: THREE.Camera) {
+      if (amount !== target) {
+        amount = THREE.MathUtils.damp(amount, target, 3, dt);
+        if (Math.abs(amount - target) < 0.001) amount = target;
+        lightScene();
+      }
+      sun.position.copy(focus).addScaledVector(look.lightDir.value, 62);
       sun.target.position.copy(focus);
+      dome.position.copy(camera.position);
+      look.focus.value.copy(focus);
     },
   };
 }

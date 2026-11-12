@@ -32,6 +32,7 @@ export function createInput(signal: AbortSignal) {
         keys.add(k);
         if (k !== 'run') e.preventDefault();
       }
+      if (e.target instanceof HTMLElement && e.target.closest('button, a')) return;
       if (e.code === 'Space') {
         jumpQueued = true;
         e.preventDefault();

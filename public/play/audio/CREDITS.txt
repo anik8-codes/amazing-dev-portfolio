@@ -1,0 +1,15 @@
+PLAY audio
+
+Surf: Oceanwavescrushing by Luftrum, CC BY 3.0.
+Source: https://commons.wikimedia.org/wiki/File:Oceanwavescrushing.ogg
+Licence: https://creativecommons.org/licenses/by/3.0/
+Adapted by trimming, filtering, mixing to mono and crossfading the loop.
+
+Birds: Bird singing by jc (Jc Guan), released into the public domain.
+Source: https://commons.wikimedia.org/wiki/File:Bird_singing.ogg
+Adapted by trimming and filtering.
+
+Footsteps, brick impact and coin: RPG Audio by Kenney, CC0 1.0.
+Source: https://opengameart.org/content/50-rpg-sound-effects
+Licence: https://creativecommons.org/publicdomain/zero/1.0/
+Converted to mono MP3.

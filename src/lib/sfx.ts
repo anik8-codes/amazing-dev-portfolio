@@ -14,8 +14,10 @@ const listeners = new Set<() => void>();
 let ctx: AudioContext | null = null;
 let whoosh: AudioBuffer | null = null;
 let click: AudioBuffer | null = null;
+let soundOverride: boolean | null = null;
 
 export function soundOn(): boolean {
+  if (soundOverride !== null) return soundOverride;
   try {
     return localStorage.getItem(KEY) === 'on';
   } catch {
@@ -26,8 +28,9 @@ export function soundOn(): boolean {
 export function setSound(on: boolean) {
   try {
     localStorage.setItem(KEY, on ? 'on' : 'off');
+    soundOverride = null;
   } catch {
-    // private mode: still works for this page view
+    soundOverride = on;
   }
   listeners.forEach((l) => l());
   play(on ? 'on' : 'off', true);

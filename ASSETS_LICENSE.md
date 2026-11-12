@@ -17,6 +17,8 @@ Project landing-page screenshots (`media/projects/` and `public/projects/`) reta
 
 The virtual office models, textures and adapted runtime retain Henry Heffernan's MIT licence (Copyright 2024 Henry Heffernan). Full notice: [public/office/LICENSE.txt](public/office/LICENSE.txt). Source revision, asset mapping and adaptations: [public/office/CREDITS.md](public/office/CREDITS.md). They are excluded from the all-rights-reserved claim above.
 
+The PLAY recordings retain their original terms. See [sound credits](public/play/audio/CREDITS.txt) for the sources, licences and edits.
+
 You may read and learn from these files. You may not reuse them, including in a fork, without written permission. If you fork the code for your own site, replace them with your own.
 
 <!-- TODO(decision-10): all rights reserved (current default) vs CC BY-NC 4.0 for art, music and posts. -->

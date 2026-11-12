@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { looks } from '@/assets/sprites';
 import { Sprite } from '@/components/pixel/Sprite';
 import { lore, places } from '@/config/lore';
+import { setSound, soundOn, subscribeSound } from '@/lib/sfx';
 import type { WorldHandle } from '@/lib/world/engine';
 import { Joystick } from './Joystick';
 
@@ -33,6 +34,8 @@ export function PlayGame() {
   const [listOpen, setListOpen] = useState(false);
   const [poi, setPoi] = useState(-1);
   const [cookies, setCookies] = useState<'accepted' | 'rejected' | null>(null);
+  const [sunset, setSunset] = useState(false);
+  const sound = useSyncExternalStore(subscribeSound, soundOn, () => false);
 
   useEffect(() => {
     const el = host.current;
@@ -54,6 +57,7 @@ export function PlayGame() {
         }),
       )
       .then((h) => {
+        if (controller.signal.aborted) return;
         handle.current = h;
         setStatus('ready');
       })
@@ -87,11 +91,37 @@ export function PlayGame() {
         <Link href="/" className={pill}>
           ← back to site
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           {status === 'ready' && (
-            <p className={`${pill} hover:translate-y-0`} aria-live="polite">
-              coins {coins[0]}/{coins[1]}
-            </p>
+            <>
+              <p className={`${pill} hover:translate-y-0`} aria-live="polite">
+                coins {coins[0]}/{coins[1]}
+              </p>
+              <button
+                type="button"
+                aria-pressed={sunset}
+                onClick={() => {
+                  handle.current?.setSunset(!sunset);
+                  setSunset(!sunset);
+                }}
+                className={`${pill} aria-pressed:bg-panel`}
+              >
+                sunset
+              </button>
+              <button
+                type="button"
+                aria-label="world sound"
+                aria-pressed={sound}
+                data-sfx="none"
+                onClick={() => {
+                  setSound(!sound);
+                  handle.current?.setSound(!sound);
+                }}
+                className={`${pill} aria-pressed:bg-panel`}
+              >
+                sound {sound ? 'on' : 'off'}
+              </button>
+            </>
           )}
           <button
             type="button"
@@ -141,6 +171,14 @@ export function PlayGame() {
               </li>
             ))}
           </ol>
+          <a
+            href="/play/audio/CREDITS.txt"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-block text-sm text-muted underline underline-offset-4"
+          >
+            sound credits
+          </a>
         </nav>
       )}
 
@@ -246,7 +284,7 @@ export function PlayGame() {
         ) : (
           status === 'ready' && (
             <p className="hidden rounded-full border-2 border-ink bg-white px-4 py-2 text-sm font-semibold shadow-[3px_3px_0_var(--color-ink)] sm:block">
-              wasd to walk · shift to run · space to jump · drag to look around · scroll to zoom
+              wasd to walk · shift to run · space to jump · drag to orbit · scroll to zoom
             </p>
           )
         )}

@@ -104,6 +104,7 @@ Ordered tasks. Run them with `/next` (first unchecked) or `/task T07`. Each task
 - [ ] **T23 Stations** — spawn, quest board, library, DevOps factory (live CI status), arcade, portal.
   > partly done (10 Nov): 9 chapters as stations (src/config/lore.ts) and ~40 places with stories: rajwada, ips academy, poha cart, gdsc stage, baja buggy, tedx, iit madras books, the remote desk, hackathon arena (hackwave trophy + banners), qualimatrix, promptfoo coins, india gate, noida towers, cto office, aws servers, new bike, new iphone, ring light, cookie jar, portal. Left: LinkedIn/Instagram posts + photos per chapter, confirm hackathon wins/mentoring, devops factory with live CI.
 - [ ] **T24 World polish** — NPC speech, music, perf budgets (§6), low-power mode.
+  > follow-up (13 Nov): PLAY has a closer orbit camera, directional daylight and sunset, glTF material lighting, moving wave geometry, and ambient audio tied to walking, shoreline distance and flying birds. Bespoke chapter environments and performance budgets remain open.
 
 ## P4 — Extras
 

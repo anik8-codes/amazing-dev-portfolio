@@ -62,7 +62,8 @@ export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn:
   const velocity = new THREE.Vector3();
   let vy = 0;
   let grounded = true;
-  let facing = 0;
+  let facing = Math.atan2(-spawn.x, -spawn.z);
+  model.rotation.y = facing;
   const move = new THREE.Vector3();
 
   return {
@@ -72,6 +73,9 @@ export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn:
     },
     get speed() {
       return Math.hypot(velocity.x, velocity.z);
+    },
+    get grounded() {
+      return grounded;
     },
     /** Put the player somewhere (chapter list), standing still. */
     teleport(x: number, z: number) {
@@ -83,8 +87,6 @@ export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn:
     },
     update(dt: number, input: Input, view: View) {
       const m = input.move();
-      const moving = Math.hypot(m.x, m.y) > 0.05;
-      if (moving) view.track();
       const max = input.running ? RUN : WALK;
       const want = new THREE.Vector3()
         .addScaledVector(view.right, m.x * max)

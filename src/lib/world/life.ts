@@ -139,21 +139,29 @@ export function createBirds(count: number) {
   const wing = new THREE.BufferGeometry();
   wing.setAttribute(
     'position',
-    new THREE.BufferAttribute(new Float32Array([0, 0, -0.25, 0, 0, 0.25, 1, 0, 0]), 3),
+    new THREE.BufferAttribute(
+      new Float32Array([
+        0, 0, -0.18, 0.53, 0.05, -0.3, 1, 0, -0.52, 0, 0, -0.18, 1, 0, -0.52, 0.52, 0.02, 0.08, 0,
+        0, -0.18, 0.52, 0.02, 0.08, 0, 0, 0.19,
+      ]),
+      3,
+    ),
   );
   wing.computeVertexNormals();
   const material = new THREE.MeshBasicNodeMaterial({ side: THREE.DoubleSide });
   material.colorNode = vec4(
-    mix(color('#3b2f5c'), sky, rangeFogFactor(look.fogNear, look.fogFar).mul(0.7)),
+    mix(color('#352e2a'), sky, rangeFogFactor(look.fogNear, look.fogFar).mul(0.7)),
     1,
   );
   const group = new THREE.Group();
+  const bodyGeo = new THREE.SphereGeometry(0.19, 7, 5);
+  bodyGeo.scale(0.72, 0.55, 2.35);
   const birds = Array.from({ length: count }, () => {
     const bird = new THREE.Group();
     const left = new THREE.Mesh(wing, material);
     const right = new THREE.Mesh(wing, material);
     right.scale.x = -1;
-    bird.add(left, right);
+    bird.add(left, right, new THREE.Mesh(bodyGeo, material));
     bird.scale.setScalar(0.5 + rand() * 0.3);
     group.add(bird);
     return {
@@ -179,6 +187,7 @@ export function createBirds(count: number) {
         const z = b.cz + Math.sin(b.a) * b.r;
         b.bird.position.set(x, b.h + Math.sin(b.flap * 0.15) * 0.8, z);
         b.bird.rotation.y = -b.a + (b.speed > 0 ? 0 : Math.PI);
+        b.bird.rotation.z = -b.speed * 1.2;
         const w = Math.sin(b.flap) * 0.7;
         b.left.rotation.z = w;
         b.right.rotation.z = -w;
