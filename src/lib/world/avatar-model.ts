@@ -137,7 +137,7 @@ function sculpt(parent: THREE.Group, material: THREE.Material, shadows = true) {
 
 type Sculpt = ReturnType<typeof sculpt>;
 
-export function joint(parent: THREE.Group, x: number, y: number, z = 0) {
+function joint(parent: THREE.Group, x: number, y: number, z = 0) {
   const group = new THREE.Group();
   group.position.set(x, y, z);
   parent.add(group);
