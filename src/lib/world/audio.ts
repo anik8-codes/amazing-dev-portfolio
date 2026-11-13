@@ -1,4 +1,5 @@
 import type { Group, Vector3 } from 'three/webgpu';
+import type { Footstep } from './character';
 import { sandiness, shoreRadius } from './layout';
 
 const assets = ['step-a', 'step-b', 'surf', 'birds', 'brick', 'coin'] as const;
@@ -9,8 +10,7 @@ interface Frame {
   position: Vector3;
   right: Vector3;
   birds: Group;
-  distance: number;
-  speed: number;
+  footstep: Footstep;
   grounded: boolean;
 }
 
@@ -23,11 +23,8 @@ export function createWorldAudio(radius: number, signal: AbortSignal) {
   let surfPan: StereoPannerNode;
   let enabled = false;
   let visible = !document.hidden;
-  let stride = 0;
-  let stepping = false;
   let wasGrounded = true;
   let airborne = 0;
-  let step = 0;
   let nextBird = 1.8;
   let lastImpact = -Infinity;
 
@@ -133,9 +130,9 @@ export function createWorldAudio(radius: number, signal: AbortSignal) {
         4500,
       );
     },
-    update({ dt, position, right, birds, distance, speed, grounded }: Frame) {
+    update({ dt, position, right, birds, footstep, grounded }: Frame) {
       if (!enabled || !visible || context?.state !== 'running') {
-        stepping = false;
+        wasGrounded = grounded;
         airborne = 0;
         return;
       }
@@ -155,18 +152,12 @@ export function createWorldAudio(radius: number, signal: AbortSignal) {
       const landed = grounded && !wasGrounded && airborne > 0.18;
       if (grounded) airborne = 0;
       wasGrounded = grounded;
-      const moving = grounded && distance > 0.008;
-      if (moving && !stepping) stride = 1.1;
-      stepping = moving;
-      if (moving) stride += distance;
-      const pace = speed > 6.5 ? 2.25 : 1.65;
-      if (landed || (moving && stride >= pace)) {
-        stride = 0;
+      if (landed || footstep) {
         const sand = sandiness(x, z, radius) > 0.36;
         play(
-          step++ % 2 ? 'step-b' : 'step-a',
+          footstep > 0 ? 'step-b' : 'step-a',
           landed ? 0.65 : 0.47,
-          step % 2 ? 0.15 : -0.15,
+          landed ? 0 : footstep * 0.15,
           (landed ? 0.82 : 1) + Math.random() * 0.14,
           sand ? 7500 : 3600,
         );

@@ -56,7 +56,6 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
 
   // ---- models
   const paths = new Set<ModelPath>([
-    world.character.model,
     world.bricks.model,
     world.scatter.trees.model,
     world.scatter.coins.model,
@@ -92,10 +91,9 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
     throw new DOMException('aborted', 'AbortError');
   }
 
-  const character = models.get(world.character.model)!;
   for (const gltf of models.values()) enableModelShadows(gltf.scene);
   const spots: Vec2[] = world.areas.map((a) => a.at);
-  const villagers = createVillagers(character, world.character.scale, world.npcs, spots);
+  const villagers = createVillagers(world.characterScale, world.npcs, spots);
 
   // ---- ground, sea, grass
   const clearings = [
@@ -202,7 +200,7 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
 
   // ---- player, camera, input
   const spawn = new THREE.Vector3(world.spawn[0], 0, world.spawn[1]);
-  const player = createPlayer(character, world.character.scale, physics, spawn);
+  const player = createPlayer(world.characterScale, physics, spawn);
   scene.add(player.root);
   const input = createInput(signal);
   const view = createView(renderer.domElement, signal);
@@ -234,8 +232,7 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
     last = now;
     time += dt;
 
-    const { x, z } = player.position;
-    player.update(dt, input, view);
+    const footstep = player.update(dt, input, view);
     const impact = physics.step(dt);
     view.update(dt, player.position, player.speed);
     sun.follow(dt, view.focus, view.camera);
@@ -253,8 +250,7 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
       position: player.position,
       right: view.right,
       birds: birds.group,
-      distance: Math.hypot(player.position.x - x, player.position.z - z),
-      speed: player.speed,
+      footstep,
       grounded: player.grounded,
     });
 
@@ -288,6 +284,8 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
       renderer.setAnimationLoop(null);
       ro.disconnect();
       audio.dispose();
+      player.dispose();
+      villagers.dispose();
       physics.dispose();
       renderer.dispose();
       renderer.domElement.remove();

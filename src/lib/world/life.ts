@@ -1,7 +1,8 @@
 import * as THREE from 'three/webgpu';
-import { color, mix, rangeFogFactor, texture, uniform, vec3, vec4 } from 'three/tsl';
+import { color, mix, rangeFogFactor, texture, vec4 } from 'three/tsl';
 import type { GLTF } from 'three/addons/loaders/GLTFLoader.js';
-import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
+import type { Outfit } from './avatar-model';
+import { createCharacter } from './character';
 import { type Vec2, damp, seeded, turn } from './layout';
 import { look, sky, toon } from './look';
 
@@ -71,63 +72,70 @@ export function createCoins(
 }
 
 /**
- * Villagers: copies of the character in other colours, strolling between the places,
- * pausing for a bit, then picking somewhere new.
+ * Villagers wear the other brand looks and stroll between places with their own pace.
  */
-export function createVillagers(gltf: GLTF, scale: number, count: number, spots: readonly Vec2[]) {
+export function createVillagers(scale: number, count: number, spots: readonly Vec2[]) {
   const rand = seeded(77);
-  const tints = ['#ff9f43', '#54a0ff', '#5f27cd', '#10ac84', '#ee5253', '#feca57', '#c8d6e5'];
+  const outfits: readonly Outfit[] = [
+    'hoodie',
+    'creator',
+    'traveler',
+    'hackathon',
+    'formal',
+    'builder',
+    'gamer',
+  ];
   const group = new THREE.Group();
   const people = Array.from({ length: count }, (_, i) => {
-    const model = cloneSkinned(gltf.scene);
-    const tint = uniform(
-      new THREE.Vector3().setFromColor(new THREE.Color(tints[i % tints.length])),
+    const avatar = createCharacter(
+      outfits[i % outfits.length]!,
+      scale * (0.85 + rand() * 0.2),
+      (i * 0.618) % 1,
     );
-    model.traverse((o) => {
-      const mesh = o as THREE.Mesh;
-      if (!mesh.isMesh) return;
-      const map = (mesh.material as THREE.MeshStandardMaterial).map;
-      mesh.material = toon({ colorNode: map ? texture(map).rgb.mul(tint).mul(1.4) : vec3(tint) });
-      mesh.castShadow = true;
-    });
-    model.scale.setScalar(scale * (0.85 + rand() * 0.2));
     const home = spots[Math.floor(rand() * spots.length)]!;
-    model.position.set(home[0] + (rand() - 0.5) * 8, 0, home[1] + (rand() - 0.5) * 8);
-    group.add(model);
-    const mixer = new THREE.AnimationMixer(model);
-    const walk = mixer.clipAction(gltf.animations.find((a) => a.name === 'walk')!);
-    const idle = mixer.clipAction(gltf.animations.find((a) => a.name === 'idle')!);
-    idle.play();
-    return { model, mixer, walk, idle, goal: null as Vec2 | null, wait: rand() * 4, heading: 0 };
+    avatar.root.position.set(home[0] + (rand() - 0.5) * 8, 0, home[1] + (rand() - 0.5) * 8);
+    group.add(avatar.root);
+    return {
+      avatar,
+      goal: null as Vec2 | null,
+      wait: rand() * 4,
+      heading: 0,
+      pace: 1.65 + (i % 4) * 0.2,
+      speed: 0,
+    };
   });
   return {
     group,
+    dispose() {
+      for (const { avatar } of people) avatar.dispose();
+    },
     update(dt: number) {
       for (const p of people) {
-        p.mixer.update(dt);
-        if (!p.goal) {
-          p.wait -= dt;
-          if (p.wait > 0) continue;
+        const { root, update } = p.avatar;
+        p.wait -= dt;
+        if (!p.goal && p.wait <= 0) {
           const s = spots[Math.floor(rand() * spots.length)]!;
           p.goal = [s[0] + (rand() - 0.5) * 10, s[1] + (rand() - 0.5) * 10];
-          p.walk.reset().fadeIn(0.2).play();
-          p.idle.fadeOut(0.2);
         }
-        const dx = p.goal[0] - p.model.position.x;
-        const dz = p.goal[1] - p.model.position.z;
-        const d = Math.hypot(dx, dz);
-        if (d < 0.5) {
-          p.goal = null;
-          p.wait = 2 + rand() * 6;
-          p.idle.reset().fadeIn(0.3).play();
-          p.walk.fadeOut(0.3);
-          continue;
+        let distance = 0;
+        if (p.goal) {
+          const dx = p.goal[0] - root.position.x;
+          const dz = p.goal[1] - root.position.z;
+          const d = Math.hypot(dx, dz);
+          if (d < 0.15) {
+            p.goal = null;
+            p.speed = 0;
+            p.wait = 2 + rand() * 6;
+          } else {
+            p.speed = damp(p.speed, Math.min(p.pace, d * 2.5), 6, dt);
+            distance = Math.min(d, p.speed * dt);
+            root.position.x += (dx / d) * distance;
+            root.position.z += (dz / d) * distance;
+            p.heading += turn(p.heading, Math.atan2(dx, dz)) * Math.min(1, dt * 6);
+            root.rotation.y = p.heading;
+          }
         }
-        const speed = 2.2;
-        p.model.position.x += (dx / d) * speed * dt;
-        p.model.position.z += (dz / d) * speed * dt;
-        p.heading += turn(p.heading, Math.atan2(dx, dz)) * Math.min(1, dt * 6);
-        p.model.rotation.y = p.heading;
+        update(dt, distance);
       }
     },
   };

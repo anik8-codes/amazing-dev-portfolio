@@ -1,26 +1,24 @@
 import * as THREE from 'three/webgpu';
-import type { GLTF } from 'three/addons/loaders/GLTFLoader.js';
+import { createCharacter } from './character';
 import { damp, turn } from './layout';
 import type { Input } from './input';
 import type { Physics } from './physics';
 import type { View } from './view';
 
-const WALK = 5.5;
-const RUN = 10;
+const WALK = 2.8;
+const RUN = 7;
 const JUMP = 10.5;
 const GRAVITY = -30;
 
 /**
  * anik8 on foot: a Rapier kinematic character controller (capsule) that slides along walls,
  * steps up kerbs, snaps to the ground and shoves dynamic bodies out of the way. The model
- * turns smoothly toward where it's going and blends idle / walk / jump animations.
+ * turns smoothly toward where it's going and poses the rig from its actual movement.
  */
-export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn: THREE.Vector3) {
+export function createPlayer(scale: number, physics: Physics, spawn: THREE.Vector3) {
   const { RAPIER, world } = physics;
-  const model = gltf.scene;
-  model.scale.setScalar(scale);
-  const root = new THREE.Group();
-  root.add(model);
+  const avatar = createCharacter('default', scale, 0.38);
+  const { root } = avatar;
   root.position.copy(spawn);
 
   const height = 0.8 * scale;
@@ -41,33 +39,16 @@ export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn:
   kcc.setApplyImpulsesToDynamicBodies(true);
   kcc.setCharacterMass(60);
 
-  // animations: idle / walk / jump, cross-faded
-  const mixer = new THREE.AnimationMixer(model);
-  const clip = (name: string) => gltf.animations.find((a) => a.name === name);
-  const actions = Object.fromEntries(
-    (['idle', 'walk', 'jump'] as const).flatMap((n) => {
-      const c = clip(n);
-      return c ? [[n, mixer.clipAction(c)]] : [];
-    }),
-  ) as Partial<Record<'idle' | 'walk' | 'jump', THREE.AnimationAction>>;
-  let current: THREE.AnimationAction | undefined = actions.idle;
-  current?.play();
-  const play = (next: THREE.AnimationAction | undefined) => {
-    if (!next || next === current) return;
-    next.reset().fadeIn(0.18).play();
-    current?.fadeOut(0.18);
-    current = next;
-  };
-
   const velocity = new THREE.Vector3();
   let vy = 0;
   let grounded = true;
-  let facing = Math.atan2(-spawn.x, -spawn.z);
-  model.rotation.y = facing;
+  let facing = 0.05;
+  root.rotation.y = facing;
   const move = new THREE.Vector3();
 
   return {
     root,
+    dispose: avatar.dispose,
     get position() {
       return root.position;
     },
@@ -98,7 +79,6 @@ export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn:
       if (input.takeJump() && grounded) {
         vy = JUMP;
         grounded = false;
-        play(actions.jump);
       }
       vy = grounded && vy < 0 ? -1 : vy + GRAVITY * dt;
 
@@ -114,15 +94,8 @@ export function createPlayer(gltf: GLTF, scale: number, physics: Physics, spawn:
 
       if (this.speed > 0.4)
         facing += turn(facing, Math.atan2(velocity.x, velocity.z)) * Math.min(1, dt * 12);
-      model.rotation.y = facing;
-
-      if (grounded) {
-        if (this.speed > 0.6) {
-          play(actions.walk);
-          if (actions.walk) actions.walk.timeScale = Math.max(0.8, this.speed / 4.2);
-        } else play(actions.idle);
-      }
-      mixer.update(dt);
+      root.rotation.y = facing;
+      return avatar.update(dt, Math.hypot(done.x, done.z), grounded, vy);
     },
   };
 }

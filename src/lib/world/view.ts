@@ -18,7 +18,7 @@ export function createView(dom: HTMLElement, signal: AbortSignal) {
   const forward = new THREE.Vector3(-Math.sin(theta), 0, -Math.cos(theta));
   const right = new THREE.Vector3(Math.cos(theta), 0, -Math.sin(theta));
 
-  const radius = () => THREE.MathUtils.lerp(6, 45, zoom * zoom) + speedPull;
+  const radius = () => THREE.MathUtils.lerp(3.8, 45, zoom * zoom) + speedPull;
 
   // drag to pan, wheel / pinch to zoom
   const pointers = new Map<number, { x: number; y: number }>();
