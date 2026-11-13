@@ -25,6 +25,8 @@ export async function createPhysics(islandRadius: number) {
   }
 
   const dynamic: { body: RAPIER.RigidBody; mesh: THREE.Object3D }[] = [];
+  const brickBodies = new Map<number, RAPIER.RigidBody>();
+  const impacts = new RAPIER.EventQueue(true);
 
   return {
     RAPIER,
@@ -54,25 +56,37 @@ export async function createPhysics(islandRadius: number) {
       const body = world.createRigidBody(
         RAPIER.RigidBodyDesc.dynamic().setTranslation(p.x, p.y, p.z).setCanSleep(true),
       );
-      world.createCollider(
+      const collider = world.createCollider(
         RAPIER.ColliderDesc.cuboid(...half)
           .setDensity(0.6)
-          .setFriction(0.8),
+          .setFriction(0.8)
+          .setActiveEvents(RAPIER.ActiveEvents.CONTACT_FORCE_EVENTS)
+          .setContactForceEventThreshold(125),
         body,
       );
+      brickBodies.set(collider.handle, body);
       dynamic.push({ body, mesh });
     },
     step(dt: number) {
       world.timestep = Math.min(dt, 1 / 30);
-      world.step();
+      world.step(impacts);
+      let loudest: { at: RAPIER.Vector; force: number } | undefined;
+      impacts.drainContactForceEvents((impact) => {
+        const force = impact.maxForceMagnitude();
+        if (force <= 125 || force <= (loudest?.force ?? 0)) return;
+        const brick = brickBodies.get(impact.collider1()) ?? brickBodies.get(impact.collider2());
+        if (brick) loudest = { at: brick.translation(), force };
+      });
       for (const { body, mesh } of dynamic) {
         const t = body.translation();
         const r = body.rotation();
         mesh.position.set(t.x, t.y, t.z);
         mesh.quaternion.set(r.x, r.y, r.z, r.w);
       }
+      return loudest;
     },
     dispose() {
+      impacts.free();
       world.free();
     },
   };

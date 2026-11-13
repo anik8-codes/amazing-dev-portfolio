@@ -9,7 +9,7 @@ const OG_IMAGE = '/opengraph-image';
 /**
  * Per-page metadata: title, description, canonical URL, Markdown twin and Open Graph fields.
  * (Next replaces a parent's `openGraph`/`alternates` wholesale, so every page sets its own.
- * The share image comes from the nearest `opengraph-image.tsx`, which overrides config.)
+ * Each page pairs this metadata with its route's `opengraph-image.tsx`.)
  */
 export function pageMeta({
   title,

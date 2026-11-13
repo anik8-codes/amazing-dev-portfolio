@@ -2,7 +2,6 @@ import { pageMeta } from '@/lib/seo';
 import { site } from '@/config/site';
 import { intro } from '@/config/hero';
 import { HeroCanvas } from '@/components/hero/HeroCanvas';
-import { ContinueScreen } from '@/components/sections/ContinueScreen';
 import { Faq } from '@/components/sections/Faq';
 import { GithubSection } from '@/components/github/GithubSection';
 import { SkillGrid } from '@/components/skills/SkillGrid';
@@ -30,7 +29,6 @@ export default function Home() {
       <GithubSection />
       <SkillGrid />
       <Faq />
-      <ContinueScreen />
       <ScrollRunner />
       <SwarmLoader />
     </>

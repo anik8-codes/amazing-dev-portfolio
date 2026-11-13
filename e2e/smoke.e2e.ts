@@ -63,3 +63,24 @@ for (const path of ['/', '/projects/undrift/', '/experience/maxcode/', '/resume/
     expect(await res.text()).toMatch(/^# /);
   });
 }
+
+test('public pages publish fetchable Open Graph and X share images', async ({ page, request }) => {
+  for (const path of ['/', '/projects/undrift/', '/experience/maxcode/', '/resume/', '/play/']) {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+    const openGraph = page.locator('head meta[property="og:image"]');
+    await expect(openGraph, path).toHaveCount(1);
+    const image = new URL((await openGraph.getAttribute('content'))!);
+    expect(image.origin).toBe('https://anik8.codes');
+    expect(image.pathname).toBe(`${path}opengraph-image`);
+    await expect(page.locator('head meta[name="twitter:image"]')).toHaveAttribute(
+      'content',
+      image.href,
+    );
+
+    const response = await request.get(`${image.pathname}${image.search}`);
+    expect(response.ok(), image.href).toBe(true);
+    const png = await response.body();
+    expect(png.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]);
+  }
+});

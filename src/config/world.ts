@@ -1,7 +1,7 @@
 /**
  * The /play world: an open island where every lore chapter is a place you can walk to.
- * Models are Kenney's CC0 kits in public/play/models/ (credits there). Units ≈ metres;
- * a city tile is 1 unit, so houses are scaled up ×5. The character is about 1.4 m tall.
+ * Props use Kenney's CC0 kits in public/play/models/ (credits there). Units ≈ metres;
+ * a city tile is 1 unit, so houses are scaled up ×5.
  */
 
 type Kit = 'platformer' | 'city' | 'racing' | 'arena';
@@ -38,7 +38,7 @@ const house = (model: ModelPath, at: readonly [number, number], rot = 0, scale =
 export const world = {
   islandRadius: 66,
   spawn: [0, 8] as const,
-  character: { model: 'platformer/character', scale: 1.8 } as const,
+  characterScale: 1.8,
 
   areas: [
     {

@@ -2,6 +2,8 @@ import * as THREE from 'three/webgpu';
 import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import { lore, places } from '@/config/lore';
 import { world, type ModelPath, type Piece } from '@/config/world';
+import { soundOn } from '@/lib/sfx';
+import { createWorldAudio } from './audio';
 import { type Vec2, areaAt, pyramid, scatter, seeded } from './layout';
 import { createInput } from './input';
 import {
@@ -12,7 +14,7 @@ import {
   createSign,
   createVillagers,
 } from './life';
-import { createSun, look, sky, toonify } from './look';
+import { createSun, enableModelShadows, look, sky } from './look';
 import { createBushes, createGrass, createGround, createWater, grassMask } from './nature';
 import { createPhysics } from './physics';
 import { createPlayer } from './player';
@@ -48,12 +50,12 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
 
   const scene = new THREE.Scene();
   scene.backgroundNode = sky;
-  scene.add(new THREE.AmbientLight('#ffffff', 0.4));
+  const fog = new THREE.Fog('#bed5df', 30, 145);
+  scene.fog = fog;
   const sun = createSun(scene);
 
   // ---- models
   const paths = new Set<ModelPath>([
-    world.character.model,
     world.bricks.model,
     world.scatter.trees.model,
     world.scatter.coins.model,
@@ -65,26 +67,33 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
   const models = new Map<ModelPath, GLTF>();
   let loaded = 0;
   events.onProgress(0, paths.size + 1);
-  await Promise.all(
-    [...paths].map(async (p) => {
-      models.set(p, await loader.loadAsync(`/play/models/${p}.glb`));
-      events.onProgress(++loaded, paths.size + 1);
-    }),
-  );
-  const physics = await createPhysics(world.islandRadius);
+  const physics = await (async () => {
+    try {
+      await Promise.all(
+        [...paths].map(async (p) => {
+          models.set(p, await loader.loadAsync(`/play/models/${p}.glb`));
+          if (!signal.aborted) events.onProgress(++loaded, paths.size + 1);
+        }),
+      );
+      if (signal.aborted) throw new DOMException('aborted', 'AbortError');
+      return await createPhysics(world.islandRadius);
+    } catch (error) {
+      renderer.dispose();
+      renderer.domElement.remove();
+      throw error;
+    }
+  })();
   events.onProgress(++loaded, paths.size + 1);
   if (signal.aborted) {
     physics.dispose();
     renderer.dispose();
+    renderer.domElement.remove();
     throw new DOMException('aborted', 'AbortError');
   }
 
-  // villagers copy the character's original materials, so build them before toonifying
-  const character = models.get(world.character.model)!;
+  for (const gltf of models.values()) enableModelShadows(gltf.scene);
   const spots: Vec2[] = world.areas.map((a) => a.at);
-  const villagers = createVillagers(character, world.character.scale, world.npcs, spots);
-  const cache = new Map();
-  for (const gltf of models.values()) toonify(gltf.scene, cache);
+  const villagers = createVillagers(world.characterScale, world.npcs, spots);
 
   // ---- ground, sea, grass
   const clearings = [
@@ -159,6 +168,7 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
   }
 
   // ---- life
+  const audio = createWorldAudio(world.islandRadius, signal);
   const c = world.scatter.clouds;
   const clouds = createClouds(models.get(c.model)!, c.count, c.scale, c.seed);
   const coinSpots = scatter(
@@ -171,7 +181,10 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
     models.get(world.scatter.coins.model)!,
     coinSpots,
     world.scatter.coins.scale,
-    (n) => events.onCoin(n, coinSpots.length),
+    (n) => {
+      audio.collect();
+      events.onCoin(n, coinSpots.length);
+    },
   );
   const birds = createBirds(world.birds);
   const areaById = new Map<string, { at: Vec2 }>(world.areas.map((a) => [a.id, a]));
@@ -187,11 +200,16 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
 
   // ---- player, camera, input
   const spawn = new THREE.Vector3(world.spawn[0], 0, world.spawn[1]);
-  const player = createPlayer(character, world.character.scale, physics, spawn);
+  const player = createPlayer(world.characterScale, physics, spawn);
   scene.add(player.root);
   const input = createInput(signal);
   const view = createView(renderer.domElement, signal);
   view.jump(spawn);
+  const unlockAudio = () => {
+    if (soundOn()) audio.setEnabled(true);
+  };
+  document.addEventListener('pointerdown', unlockAudio, { signal });
+  document.addEventListener('keydown', unlockAudio, { signal });
 
   const resize = () => {
     const w = host.clientWidth;
@@ -208,24 +226,33 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
   let poi = -1;
   let last = performance.now();
   let time = 0;
-  renderer.setAnimationLoop(() => {
+  const frame = () => {
     const now = performance.now();
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     time += dt;
 
-    player.update(dt, input, view);
-    physics.step(dt);
+    const footstep = player.update(dt, input, view);
+    const impact = physics.step(dt);
     view.update(dt, player.position, player.speed);
-    sun.follow(view.focus);
+    sun.follow(dt, view.focus, view.camera);
     grass.follow(view.focus);
-    // fog starts just past the focus point and ends well behind it, at any zoom
-    look.fogNear.value = view.distance * 1.1;
-    look.fogFar.value = view.distance * 3.2;
+    fog.near = look.fogNear.value = Math.max(27, view.distance * 1.15);
+    fog.far = look.fogFar.value = Math.max(145, view.distance * 3.6);
+    fog.color.setRGB(sky.value.x, sky.value.y, sky.value.z);
     clouds.update(dt);
     coins.update(dt, player.position);
     villagers.update(dt);
     birds.update(dt);
+    if (impact) audio.impact(impact.at, impact.force, player.position, view.right);
+    audio.update({
+      dt,
+      position: player.position,
+      right: view.right,
+      birds: birds.group,
+      footstep,
+      grounded: player.grounded,
+    });
 
     const here = areaAt(world.areas, player.position.x, player.position.z)?.id ?? null;
     if (here !== area) {
@@ -241,13 +268,24 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
     if (input.takeInteract() && area) events.onInteract(area);
 
     renderer.render(scene, view.camera);
-  });
+  };
+  const syncVisibility = () => {
+    const visible = !document.hidden;
+    last = performance.now();
+    audio.setVisible(visible);
+    renderer.setAnimationLoop(visible ? frame : null);
+  };
+  document.addEventListener('visibilitychange', syncVisibility, { signal });
+  syncVisibility();
 
   signal.addEventListener(
     'abort',
     () => {
       renderer.setAnimationLoop(null);
       ro.disconnect();
+      audio.dispose();
+      player.dispose();
+      villagers.dispose();
       physics.dispose();
       renderer.dispose();
       renderer.domElement.remove();
@@ -258,6 +296,8 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
   return {
     setStick: input.setStick,
     press: input.press,
+    setSunset: sun.setSunset,
+    setSound: audio.setEnabled,
     /** Jump to an area (from the chapter list). */
     teleport(id: string) {
       const a = world.areas.find((x) => x.id === id);
@@ -266,7 +306,7 @@ export async function createWorld(host: HTMLElement, signal: AbortSignal, events
       const d = Math.hypot(a.at[0], a.at[1]) || 1;
       const k = (a.radius * 0.75) / d;
       player.teleport(a.at[0] - a.at[0] * k, a.at[1] - a.at[1] * k);
-      view.track();
+      view.jump(player.position);
     },
   };
 }

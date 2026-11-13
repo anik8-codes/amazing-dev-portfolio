@@ -4,9 +4,11 @@ import {
   atan,
   attribute,
   cameraPosition,
+  cos,
   float,
   mix,
   mod,
+  positionGeometry,
   positionWorld,
   rangeFogFactor,
   sin,
@@ -16,7 +18,6 @@ import {
   uv,
   vec2,
   vec3,
-  vertexIndex,
 } from 'three/tsl';
 import { type Vec2, groundHeight, sandiness, seeded } from './layout';
 import { look, palette, sky, toon } from './look';
@@ -69,18 +70,40 @@ export function createGround(radius: number, mask: Mask) {
     .mul(sin(positionWorld.z.mul(0.17)))
     .mul(0.5)
     .add(0.5);
+  const grain = sin(positionWorld.x.mul(13.3).add(positionWorld.z.mul(9.7)))
+    .mul(sin(positionWorld.z.mul(11.2).sub(positionWorld.x.mul(7.5))))
+    .mul(0.07)
+    .add(0.97);
   const grass = mix(col(palette.grassDark), col(palette.grass), patches.mul(0.6).add(0.2));
-  const material = toon({ colorNode: mix(col(palette.sand), grass, grassAmount), bounce: false });
+  const material = toon({
+    colorNode: mix(col(palette.sand), grass, grassAmount).mul(grain),
+    bounce: false,
+  });
   const mesh = new THREE.Mesh(geo, material);
   mesh.receiveShadow = true;
   return mesh;
 }
 
-/** Sea: deep → shallow by distance to the coast, with foam lines rolling in. */
+/** Wave geometry is densest near the island; the same wave slopes reflect the sun. */
 export function createWater(radius: number) {
-  const geo = new THREE.PlaneGeometry(900, 900);
+  const geo = new THREE.PlaneGeometry(2, 2, 160, 160);
   geo.rotateX(-Math.PI / 2);
-  const material = new THREE.MeshBasicNodeMaterial();
+  const spread = (n: number) => n * (96 + Math.abs(n) ** 8 * 354);
+  const vertices = geo.attributes.position!;
+  for (let i = 0; i < vertices.count; i++) {
+    vertices.setXYZ(i, spread(vertices.getX(i)), 0, spread(vertices.getZ(i)));
+  }
+  geo.computeBoundingSphere();
+  const swell = (p: THREE.Node<'vec2'>) => p.x.mul(0.54).add(p.y.mul(0.44)).add(time.mul(1.3));
+  const chop = (p: THREE.Node<'vec2'>) => p.x.mul(-0.38).add(p.y.mul(1.08)).add(time.mul(1.8));
+  const material = new THREE.MeshBasicNodeMaterial({ fog: false });
+  material.positionNode = Fn(() => {
+    const p = positionGeometry.xz;
+    const height = sin(swell(p))
+      .mul(0.17)
+      .add(sin(chop(p)).mul(0.058));
+    return vec3(p.x, height, p.y);
+  })();
   material.colorNode = Fn(() => {
     const p = positionWorld.xz;
     const a = atan(p.y, p.x);
@@ -92,12 +115,25 @@ export function createWater(radius: number) {
     const shallow = d.sub(2).div(30).clamp(0, 1);
     const base = mix(col(palette.water), col(palette.waterDeep), shallow).toVar();
     // foam: bands that move toward the beach and fade out at sea
-    const band = sin(d.mul(1.3).add(time.mul(1.6)))
+    const band = sin(
+      d
+        .mul(1.3)
+        .add(time.mul(1.6))
+        .add(sin(a.mul(14)).mul(0.4)),
+    )
       .mul(0.5)
       .add(0.5);
-    const foam = band.step(0.92).mul(d.sub(-1).div(14).oneMinus().clamp(0, 1));
-    const edge = d.add(3.5).div(2.5).oneMinus().clamp(0, 1); // white line on the sand
-    base.assign(mix(base, vec3(1, 1, 1), foam.max(edge).mul(0.85)));
+    const foam = band.smoothstep(0.88, 0.99).mul(d.sub(-1).div(14).oneMinus().clamp(0, 1));
+    const edge = d.add(3.2).abs().smoothstep(0, 1.1).oneMinus();
+    const s = cos(swell(p)).mul(0.17);
+    const c = cos(chop(p)).mul(0.058);
+    const n = vec3(s.mul(-0.54).add(c.mul(0.38)), 1, s.mul(-0.44).sub(c.mul(1.08))).normalize();
+    const eye = cameraPosition.sub(positionWorld).normalize();
+    const reflection = n.mul(n.dot(look.lightDir).mul(2)).sub(look.lightDir);
+    const reflectedSky = eye.dot(n).clamp(0, 1).oneMinus().pow(3).mul(0.55);
+    const glint = reflection.dot(eye).max(0).pow(34).mul(0.9);
+    base.assign(mix(base, sky, reflectedSky).add(look.lightColor.mul(glint)));
+    base.assign(mix(base, vec3(0.84, 0.89, 0.86), foam.max(edge).mul(0.58)));
     return mix(base, sky, rangeFogFactor(look.fogNear, look.fogFar));
   })();
   const mesh = new THREE.Mesh(geo, material);
@@ -106,38 +142,52 @@ export function createWater(radius: number) {
 }
 
 /**
- * Grass: one triangle per blade on a grid that wraps around the focus point, so it never ends.
- * Each blade turns to the camera, sways in the wind and is darker at the root.
+ * Grass blades bend along two segments, with individual orientations and a wind field.
  */
 export function createGrass(mask: Mask) {
-  const per = 230;
+  const per = 172;
   const span = 52;
   const count = per * per;
   const rand = seeded(42);
-  const position = new Float32Array(count * 3 * 2);
-  const random = new Float32Array(count * 3);
+  const shape = [
+    [-1, 0],
+    [1, 0],
+    [-0.48, 0.55],
+    [1, 0],
+    [0.48, 0.55],
+    [-0.48, 0.55],
+    [-0.48, 0.55],
+    [0.48, 0.55],
+    [0, 1],
+  ] as const;
+  const position = new Float32Array(count * shape.length * 2);
+  const blade = new Float32Array(count * shape.length * 3);
   for (let i = 0; i < count; i++) {
     const x = ((i % per) / per - 0.5) * span + (rand() - 0.5) * (span / per);
     const z = (Math.floor(i / per) / per - 0.5) * span + (rand() - 0.5) * (span / per);
     const r = rand();
-    for (let v = 0; v < 3; v++) {
-      position[i * 6 + v * 2] = x;
-      position[i * 6 + v * 2 + 1] = z;
-      random[i * 3 + v] = r;
+    for (let v = 0; v < shape.length; v++) {
+      const index = i * shape.length + v;
+      position[index * 2] = x;
+      position[index * 2 + 1] = z;
+      blade[index * 3] = r;
+      blade[index * 3 + 1] = shape[v]![0];
+      blade[index * 3 + 2] = shape[v]![1];
     }
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(position, 2));
-  geo.setAttribute('random', new THREE.BufferAttribute(random, 1));
+  geo.setAttribute('blade', new THREE.BufferAttribute(blade, 3));
   geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e4);
 
   const center = uniform(new THREE.Vector2());
-  const corner = vertexIndex.mod(3);
-  const tip = corner.equal(0).select(float(1), float(0));
-  const amount = float(0).toVar();
+  const profile = attribute<'vec3'>('blade', 'vec3');
+  const tip = profile.z;
 
   const material = toon({
-    colorNode: mix(col(palette.grassDark), col(palette.grass).mul(1.15), tip),
+    colorNode: mix(col(palette.grassDark), col(palette.grass), tip).mul(
+      profile.x.mul(0.38).add(0.8),
+    ),
     normal: vec3(0, 1, 0),
     shade: tip.oneMinus().mul(0.5),
     bounce: false,
@@ -149,17 +199,15 @@ export function createGrass(mask: Mask) {
     // wrap the blade into the square around the focus point
     const rel = mod(p.sub(center).add(half), span).sub(half);
     const world = rel.add(center);
-    amount.assign(texture(mask.tex, mask.toUv(world)).r);
-    const h = attribute<'float'>('random', 'float').mul(0.45).add(0.4).mul(amount).mul(0.6);
-    // triangle: tip (0,1), left (-1,0), right (1,0), facing the camera
-    const side = corner.equal(1).select(float(-1), corner.equal(2).select(float(1), float(0)));
-    const angle = atan(world.y.sub(cameraPosition.z), world.x.sub(cameraPosition.x));
-    const w = amount.mul(0.075);
-    const offset = vec2(angle.sin().negate(), angle.cos()).mul(side.mul(w));
+    const amount = texture(mask.tex, mask.toUv(world)).r;
+    const h = profile.x.mul(0.24).add(0.105).mul(amount);
+    const angle = profile.x.mul(Math.PI * 2);
+    const direction = vec2(angle.cos(), angle.sin());
+    const offset = direction.mul(profile.y.mul(amount).mul(profile.x.mul(0.021).add(0.022)));
     const sway = sin(time.mul(1.8).add(world.x.mul(0.35)).add(world.y.mul(0.22)))
       .mul(0.5)
       .add(0.6)
-      .mul(tip)
+      .mul(tip.mul(tip))
       .mul(h)
       .mul(0.35);
     return vec3(
@@ -218,9 +266,19 @@ export function createBushes(points: readonly Vec2[], seed = 1) {
     cards.push(plane);
   }
   const geo = mergeGeometries(cards);
+  const visibility = Fn(() => {
+    const toPlayer = look.focus.sub(cameraPosition);
+    const toLeaf = positionWorld.sub(cameraPosition);
+    const along = toLeaf.dot(toPlayer).div(toPlayer.dot(toPlayer).max(1)).clamp(0, 1);
+    const fromSightline = toLeaf.sub(toPlayer.mul(along)).length();
+    const between = along.smoothstep(0, 0.1).mul(along.smoothstep(0.85, 1).oneMinus());
+    return fromSightline.smoothstep(0.8, 2.5).oneMinus().mul(between).oneMinus();
+  })();
   const material = toon({
     colorNode: mix(col(palette.grassDark), col(palette.leaves), uv().y.mul(0.4).add(0.5)),
-    alpha: texture(leafTexture(), uv()).r,
+    alpha: texture(leafTexture(), uv())
+      .r.mul(positionWorld.distance(cameraPosition).smoothstep(1.2, 3.3))
+      .mul(visibility),
     side: THREE.DoubleSide,
   });
   const mesh = new THREE.InstancedMesh(geo, material, points.length);
