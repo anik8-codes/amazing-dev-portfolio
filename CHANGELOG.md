@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.1.0](https://github.com/anik8-codes/amazing-dev-portfolio/compare/v1.0.0...v1.1.0) (2026-11-13)
+
+
+### Features
+
+* **brand:** replace the hanging footer with arcade exit ([95126c3](https://github.com/anik8-codes/amazing-dev-portfolio/commit/95126c32cb523b285fb90bf395cfb72ea3e6c9da))
+* **infra:** add cloudflare web analytics and umami events ([49e366e](https://github.com/anik8-codes/amazing-dev-portfolio/commit/49e366e34e0de48a02748f93266fa6390924c8e0))
+* **play:** add branded characters and arcade exit ([aab396a](https://github.com/anik8-codes/amazing-dev-portfolio/commit/aab396a3344d36df5c7ea8e89dad709925d46b18))
+* **play:** build branded characters and walking animations ([15439c8](https://github.com/anik8-codes/amazing-dev-portfolio/commit/15439c8a9c782fff3b23a8af4ace6b6b74c63417))
+* **play:** deepen world lighting and sound ([aaa1e43](https://github.com/anik8-codes/amazing-dev-portfolio/commit/aaa1e436b90846c527ae13979450750adae74a88))
+* **seo:** add per-page share cards, breadcrumbs and markdown twins ([ac84a7e](https://github.com/anik8-codes/amazing-dev-portfolio/commit/ac84a7e6209784f8b65eac5f1a87305c5ba30a32))
+* **seo:** add seo, geo and analytics ([57ab486](https://github.com/anik8-codes/amazing-dev-portfolio/commit/57ab486db81f3d94ae23e3b113a76bdf59a25da3))
+
+
+### Bug Fixes
+
+* **ci:** audit with stable chrome in parallel ([9ff2e85](https://github.com/anik8-codes/amazing-dev-portfolio/commit/9ff2e852bf33df1899b89a505704a58e00eefd00))
+* **ci:** restore performance budgets and deployment checks ([35261d9](https://github.com/anik8-codes/amazing-dev-portfolio/commit/35261d9201275ea265538f7efc33d9eb29a8f5ae))
+* **play:** keep the avatar joint helper private ([4eec2d7](https://github.com/anik8-codes/amazing-dev-portfolio/commit/4eec2d7a81cfd46fbe5f0cbd76242128929ea706))
+* **repo:** remove the broken footer link ([686abb2](https://github.com/anik8-codes/amazing-dev-portfolio/commit/686abb2be1c4e8b22e60798331bf96b0f3a2fd63))
+* **scroll:** defer offscreen layout without breaking deep links ([792880e](https://github.com/anik8-codes/amazing-dev-portfolio/commit/792880ed88773d9e3d808945380ad497ea94026d))
+* **seo:** add share cards for resume and play ([2ceb4b8](https://github.com/anik8-codes/amazing-dev-portfolio/commit/2ceb4b8aaaad5605b9c992a9d13774743e3730b3))
+
 ## 1.0.0 (2026-11-09)
 
 
